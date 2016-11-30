@@ -1,5 +1,7 @@
 #include "g_local.h"
 
+void rocket_think (edict_t *self);
+void fire_bfg (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius);
 
 /*
 =================
@@ -525,7 +527,8 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 	grenade->think = Grenade_Explode;
 	grenade->dmg = damage;
 	grenade->dmg_radius = damage_radius;
-	grenade->classname = "hgrenade";
+	grenade->classname = "hgrenade";	
+
 	if (held)
 		grenade->spawnflags = 3;
 	else
@@ -539,6 +542,46 @@ void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int 
 		gi.sound (self, CHAN_WEAPON, gi.soundindex ("weapons/hgrent1a.wav"), 1, ATTN_NORM, 0);
 		gi.linkentity (grenade);
 	}
+}
+
+
+void rocket_think (edict_t *self)
+{
+	vec3_t aimdir0, aimdir1, aimdir2, aimdir3, aimdir4, aimdir5;
+	if(!self) 
+		return;
+	self->nextthink = level.time + 2;
+
+	aimdir0[0] = -1; // 1 is back, -1 is forward
+	aimdir0[1] = 0; // 1 is right, -1 left
+	aimdir0[2] = 0; // 1 is up, -1 down
+
+	aimdir1[0] = 0;
+	aimdir1[1] = 1;
+	aimdir1[2] = 0;
+
+	aimdir2[0] = 0;
+	aimdir2[1] = -1;
+	aimdir2[2] = 0;
+
+	aimdir3[0] = 0;
+	aimdir3[1] = 0;
+	aimdir3[2] = 1;
+
+	aimdir4[0] = 0;
+	aimdir4[1] = 0;
+	aimdir4[2] = -1;
+
+	aimdir5[0] = 1;
+	aimdir5[1] = 0;
+	aimdir5[2] = 0;
+
+	fire_bfg (self->owner, self->s.origin, aimdir0, 10, 900, 100);
+	fire_bfg (self->owner, self->s.origin, aimdir1, 10, 900, 100);
+	fire_bfg (self->owner, self->s.origin, aimdir2, 10, 900, 100);
+	fire_bfg (self->owner, self->s.origin, aimdir3, 10, 900, 100);
+	fire_bfg (self->owner, self->s.origin, aimdir4, 10, 900, 100);
+	fire_bfg (self->owner, self->s.origin, aimdir5, 10, 900, 100);
 }
 
 
@@ -606,7 +649,7 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	VectorCopy (start, rocket->s.origin);
 	VectorCopy (dir, rocket->movedir);
 	vectoangles (dir, rocket->s.angles);
-	VectorScale (dir, speed, rocket->velocity);
+	VectorScale (dir, 50, rocket->velocity);
 	rocket->movetype = MOVETYPE_FLYMISSILE;
 	rocket->clipmask = MASK_SHOT;
 	rocket->solid = SOLID_BBOX;
@@ -616,8 +659,8 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->s.modelindex = gi.modelindex ("models/objects/rocket/tris.md2");
 	rocket->owner = self;
 	rocket->touch = rocket_touch;
-	rocket->nextthink = level.time + 8000/speed;
-	rocket->think = G_FreeEdict;
+	rocket->nextthink = level.time + 0.5;// + 8000/speed;
+	rocket->think = rocket_think;
 	rocket->dmg = damage;
 	rocket->radius_dmg = radius_damage;
 	rocket->dmg_radius = damage_radius;
@@ -625,7 +668,7 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 	rocket->classname = "rocket";
 
 	if (self->client)
-		check_dodge (self, rocket->s.origin, dir, speed);
+		check_dodge (self, rocket->s.origin, dir, 50);
 
 	gi.linkentity (rocket);
 }

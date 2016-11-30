@@ -218,7 +218,7 @@ typedef struct gitem_s
 	qboolean	(*pickup)(struct edict_s *ent, struct edict_s *other);
 	void		(*use)(struct edict_s *ent, struct gitem_s *item);
 	void		(*drop)(struct edict_s *ent, struct gitem_s *item);
-	void		(*weaponthink)(struct edict_s *ent);
+	void		(*weaponthink)(struct edict_s *ent);//takes pointer to player who owns weapon. invoked each time weapon used
 	char		*pickup_sound;
 	char		*world_model;
 	int			world_model_flags;
@@ -1021,6 +1021,7 @@ struct edict_s
 	float		nextthink;
 	void		(*prethink) (edict_t *ent);
 	void		(*think)(edict_t *self);
+	void		(*rocket_think)(edict_t *self);
 	void		(*blocked)(edict_t *self, edict_t *other);	//move to moveinfo?
 	void		(*touch)(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 	void		(*use)(edict_t *self, edict_t *other, edict_t *activator);
