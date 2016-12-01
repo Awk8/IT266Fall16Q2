@@ -323,10 +323,23 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	G_FreeEdict (self);
 }
 
-void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper)
+float prevFire;
+int initCall = 1;
+
+void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper, float fireTime)
 {
 	edict_t	*bolt;
 	trace_t	tr;
+
+	if (initCall == 1)
+		prevFire = fireTime;
+	
+	if (fireTime  - prevFire < 20 && initCall == 0)
+		return;
+
+	initCall = 0;
+
+	prevFire = fireTime;
 
 	VectorNormalize (dir);
 
