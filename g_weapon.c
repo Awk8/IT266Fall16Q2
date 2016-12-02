@@ -1,5 +1,7 @@
 #include "g_local.h"
 
+float prevFire;
+int initCall = 1;
 
 /*
 =================
@@ -197,7 +199,7 @@ static void fire_lead (edict_t *self, vec3_t start, vec3_t aimdir, int damage, i
 	}
 
 	// send gun puff / flash
-	if (!((tr.surface) && (tr.surface->flags & SURF_SKY)))
+	if (!((tr.surface) && (tr.surface->flags & SURF_SKY))) //bitwise and 0x4 means 4 bit is true rest 0.
 	{
 		if (tr.fraction < 1.0)
 		{
@@ -310,21 +312,19 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	}
 	else
 	{
-		gi.WriteByte (svc_temp_entity);
-		gi.WriteByte (TE_BLASTER);
-		gi.WritePosition (self->s.origin);
-		if (!plane)
-			gi.WriteDir (vec3_origin);
-		else
-			gi.WriteDir (plane->normal);
-		gi.multicast (self->s.origin, MULTICAST_PVS);
+		return;
+		//gi.WriteByte (svc_temp_entity);
+		//gi.WriteByte (TE_BLASTER);
+		//gi.WritePosition (self->s.origin);
+		//if (!plane)
+		//	gi.WriteDir (vec3_origin);
+		//else
+		//	gi.WriteDir (plane->normal);
+		//gi.multicast (self->s.origin, MULTICAST_PVS);
 	}
 
 	G_FreeEdict (self);
 }
-
-float prevFire;
-int initCall = 1;
 
 void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper, float fireTime)
 {
@@ -335,7 +335,14 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 		prevFire = fireTime;
 	
 	if (fireTime  - prevFire < 20 && initCall == 0)
+	{
+		self->health -= 5;
+		if (self->health <= 0)
+		{
+			self->die;			
+		}
 		return;
+	}
 
 	initCall = 0;
 
@@ -354,7 +361,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	VectorCopy (start, bolt->s.old_origin);
 	vectoangles (dir, bolt->s.angles);
 	VectorScale (dir, speed, bolt->velocity);
-	bolt->movetype = MOVETYPE_FLYMISSILE;
+	bolt->movetype = MOVETYPE_FLYRICOCHET;
 	bolt->clipmask = MASK_SHOT;
 	bolt->solid = SOLID_BBOX;
 	bolt->s.effects |= effect;
