@@ -137,7 +137,7 @@ qboolean Pickup_Weapon (edict_t *ent, edict_t *other)
 
 	if (other->client->pers.weapon != ent->item && 
 		(other->client->pers.inventory[index] == 1) &&
-		( !deathmatch->value || other->client->pers.weapon == FindItem("blaster") ) )
+		( !deathmatch->value || other->client->pers.weapon == FindItem("blaster") || other->client->pers.weapon == FindItem("railgun")) )
 		other->client->newweapon = ent->item;
 
 	return true;
@@ -214,12 +214,9 @@ NoAmmoWeaponChange
 */
 void NoAmmoWeaponChange (edict_t *ent)
 {
-	if ( ent->client->pers.inventory[ITEM_INDEX(FindItem("slugs"))]
-		&&  ent->client->pers.inventory[ITEM_INDEX(FindItem("railgun"))] )
-	{
-		ent->client->newweapon = FindItem ("railgun");
-		return;
-	}
+
+	ent->client->newweapon = FindItem ("railgun");
+
 	if ( ent->client->pers.inventory[ITEM_INDEX(FindItem("cells"))]
 		&&  ent->client->pers.inventory[ITEM_INDEX(FindItem("hyperblaster"))] )
 	{

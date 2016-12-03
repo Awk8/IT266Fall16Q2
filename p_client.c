@@ -403,6 +403,8 @@ void TossClientWeapon (edict_t *self)
 		item = NULL;
 	if (item && (strcmp (item->pickup_name, "Blaster") == 0))
 		item = NULL;
+	if (item && (strcmp (item->pickup_name, "Railgun") == 0))
+		item = NULL;
 
 	if (!((int)(dmflags->value) & DF_QUAD_DROP))
 		quad = false;
@@ -587,25 +589,36 @@ but is called after each death and level change in deathmatch
 */
 void InitClientPersistant (gclient_t *client)
 {
-	gitem_t		*item;
+	gitem_t		*item, *item2, *item3;
+	int index;
+
 
 	memset (&client->pers, 0, sizeof(client->pers));
 
 	item = FindItem("Blaster");
+	item2 = FindItem("Railgun");
+	item = FindItem("Slugs");
+
 	client->pers.selected_item = ITEM_INDEX(item);
 	client->pers.inventory[client->pers.selected_item] = 1;
+	client->pers.selected_item = ITEM_INDEX(item2);
+	client->pers.inventory[client->pers.selected_item] = 1;
+	//index = ITEM_INDEX(item3);
+	//if ( client->pers.inventory[index] < 50 )
+	//	client->pers.inventory[index] = 50;
 
 	client->pers.weapon = item;
+	client->pers.weapon = item2;
 
-	client->pers.health			= 100;
-	client->pers.max_health		= 100;
+	client->pers.health			= 200;
+	client->pers.max_health		= 200;
 
-	client->pers.max_bullets	= 200;
-	client->pers.max_shells		= 100;
-	client->pers.max_rockets	= 50;
-	client->pers.max_grenades	= 50;
-	client->pers.max_cells		= 200;
-	client->pers.max_slugs		= 50;
+	client->pers.max_bullets	= 0;
+	client->pers.max_shells		= 0;
+	client->pers.max_rockets	= 0;
+	client->pers.max_grenades	= 0;
+	client->pers.max_cells		= 0;
+	client->pers.max_slugs		= 500;
 
 	client->pers.connected = true;
 }

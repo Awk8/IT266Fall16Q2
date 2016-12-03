@@ -338,9 +338,8 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	{
 		self->health -= 5;
 		if (self->health <= 0)
-		{
-			player_die(self, self, self, 100, start);
-		}
+			player_die(self, self, self, 5, start);
+
 		return;
 	}
 
