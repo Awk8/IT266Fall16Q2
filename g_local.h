@@ -1023,6 +1023,7 @@ struct edict_s
 	float		nextthink;
 	void		(*prethink) (edict_t *ent);
 	void		(*think)(edict_t *self);
+	void		(*blaster_think)(edict_t *self);
 	void		(*blocked)(edict_t *self, edict_t *other);	//move to moveinfo?
 	void		(*touch)(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 	void		(*use)(edict_t *self, edict_t *other, edict_t *activator);

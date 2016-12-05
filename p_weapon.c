@@ -792,7 +792,7 @@ BLASTER / HYPERBLASTER
 
 void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, int effect)
 {
-	vec3_t	forward, right;
+	vec3_t	forward, right, aimdir;
 	vec3_t	start;
 	vec3_t	offset;
 	float fireTime;

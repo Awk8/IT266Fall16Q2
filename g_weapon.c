@@ -2,6 +2,7 @@
 
 float prevFire;
 int initCall = 1;
+void blaster_think (edict_t *self);
 
 /*
 =================
@@ -326,6 +327,29 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	G_FreeEdict (self);
 }
 
+void blaster_think (edict_t *self)
+{
+	vec3_t aimdir0, aimdir1;
+	int fireTime;
+
+	if (!self)
+		return;
+
+	//self->nextthink = level.time + 20;
+	fireTime = level.time;
+
+	aimdir0[0] = 0;
+	aimdir0[1] = 1;
+	aimdir0[2] = 0;
+
+	aimdir1[0] = 0;
+	aimdir1[1] = -1;
+	aimdir1[2] = 0;
+
+	fire_blaster (self->owner, self->s.origin, aimdir0, 1000, 1000, EF_BLASTER, false, fireTime);
+	fire_blaster (self->owner, self->s.origin, aimdir1, 1000, 1000, EF_BLASTER, false, fireTime);
+}
+
 void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper, float fireTime)
 {
 	edict_t	*bolt;
@@ -371,7 +395,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	bolt->owner = self;
 	bolt->touch = blaster_touch;
 	bolt->nextthink = level.time + 2;
-	bolt->think = G_FreeEdict;
+	bolt->think = blaster_think;
 	bolt->dmg = damage;
 	bolt->classname = "bolt";
 	if (hyper)

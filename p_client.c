@@ -597,15 +597,14 @@ void InitClientPersistant (gclient_t *client)
 
 	item = FindItem("Blaster");
 	item2 = FindItem("Railgun");
-	item = FindItem("Slugs");
+	item3 = FindItem("Slugs");
 
 	client->pers.selected_item = ITEM_INDEX(item);
 	client->pers.inventory[client->pers.selected_item] = 1;
 	client->pers.selected_item = ITEM_INDEX(item2);
 	client->pers.inventory[client->pers.selected_item] = 1;
-	//index = ITEM_INDEX(item3);
-	//if ( client->pers.inventory[index] < 50 )
-	//	client->pers.inventory[index] = 50;
+	client->pers.selected_item = ITEM_INDEX(item3);
+	client->pers.inventory[client->pers.selected_item] = 30;
 
 	client->pers.weapon = item;
 	client->pers.weapon = item2;
