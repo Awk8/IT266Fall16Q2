@@ -5,7 +5,86 @@ int initCall = 1;
 int experience = 0;
 void blaster_think (edict_t *self);
 
-static int BuffOrDebuff (int chanceOfBuff)
+static void randomEffect (int playerLevel)
+{
+	int randomInt, i, choose, buffChance, buffDeBuff;
+	int randomList[10];
+
+	buffChance = chanceOfBuff(playerLevel);
+	buffDeBuff = buffOrDebuff(buffChance);
+
+	if (playerLevel == 1)
+		return; //No effect
+
+	srand(time(0));
+	for (i = 0; i < 10; i++)
+		randomList[i] = rand() % 5;
+
+	choose = rand() % 10;
+
+	if (randomList[choose] != NULL)
+		randomInt = randomList[choose];
+	else
+		randomInt = randomList[7];
+
+	if (buffDeBuff == 1)
+	{
+		switch(randomInt)
+		{
+			case 0 :
+				//Buff1(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 1 :
+				//Buff2(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 2 :
+				//Buff3(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 3 :
+				//Buff4(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 4 :
+				//Buff5(playerLevel);
+				//Call effect Hud Message
+				break;
+		}
+	}
+	else if (buffDeBuff == 2)
+	{
+		switch(randomInt)
+		{
+			case 0 :
+				//Debuff1(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 1 :
+				//Debuff2(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 2 :
+				//Debuff3(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 3 :
+				//Debuff4(playerLevel);
+				//Call effect Hud Message
+				break;
+			case 4 :
+				//Debuff5(playerLevel);
+				//Call effect Hud Message
+				break;
+		}
+	}
+	else
+		return;
+	return;
+}
+
+static int buffOrDebuff (int chanceOfBuff)
 {
 	int randomInt, i, choose;
 	int randomList[10];
