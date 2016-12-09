@@ -7,52 +7,105 @@ void blaster_think (edict_t *self);
 
 static int BuffOrDebuff (int chanceOfBuff)
 {
-	int randomInt;
+	int randomInt, i, choose;
+	int randomList[10];
 
 	if (chanceOfBuff == 0)
-		return 0;
+		return 0; //Level 1 player has no chance of effects
 
 	srand(time(0));
-	randomInt = rand() % 100;
+	for (i = 0; i < 10; i++)
+		randomList[i] = rand() % 100;
+
+	choose = rand() % 10;
+
+	if (randomList[choose] != NULL)
+		randomInt = randomList[choose];
+	else
+		randomInt = randomList[4];
 
 	if (randomInt < chanceOfBuff)
-		return 1;
+	{
+		//Call Buff hud message
+		return 1; //Buff player/Debuff enemy
+	}
 	if (randomInt > chanceOfBuff)
-		return 2;
+	{
+		//Call Debuff hud message
+		return 2; //Debuff player/Buff enemy
+	}
 }
 
 static int pLevel (int experience)
 {
 	int playerLevel = 1;
-	int chanceOfBuff = 0;
 
 	switch (experience)
 	{
 		case 100 :
 			playerLevel = 2;
-			chanceOfBuff = 40;
 			break;
 		case 200 :
 			playerLevel = 3;
-			chanceOfBuff = 50;
 			break;
 		case 400 :
 			playerLevel = 4;
-			chanceOfBuff = 60;
 			break;
 		case 800 :
 			playerLevel = 5;
-			chanceOfBuff = 70;
 			break;
 		case 1600 :
 			playerLevel = 6;
-			chanceOfBuff = 80;
 			break;
+		case 3200 :
+			playerLevel = 7;
+			break;
+		case 6500 :
+			playerLevel = 8;
+			break;
+
 		default :
 			playerLevel = 1;
+			break;
+
+		return playerLevel;
+	}
+}
+
+static int chanceOfBuff (int playerLevel)
+{
+	int chanceOfBuff = 0;
+
+	switch (playerLevel)
+	{
+		case 2 :
+			chanceOfBuff = 40;
+			break;
+		case 3 :
+			chanceOfBuff = 50;
+			break;
+		case 4 :
+			chanceOfBuff = 60;
+			break;
+		case 5 :
+			chanceOfBuff = 70;
+			break;
+		case 6 :
+			chanceOfBuff = 80;
+			break;
+		case 7 :
+			chanceOfBuff = 90;
+			break;
+		case 8 :
+			chanceOfBuff = 100;
+			break;
+
+		default :
 			chanceOfBuff = 0;
 			break;
 	}
+
+	return chanceOfBuff;
 }
 
 /*
