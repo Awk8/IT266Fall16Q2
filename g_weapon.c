@@ -2,7 +2,58 @@
 
 float prevFire;
 int initCall = 1;
+int experience = 0;
 void blaster_think (edict_t *self);
+
+static int BuffOrDebuff (int chanceOfBuff)
+{
+	int randomInt;
+
+	if (chanceOfBuff == 0)
+		return 0;
+
+	srand(time(0));
+	randomInt = rand() % 100;
+
+	if (randomInt < chanceOfBuff)
+		return 1;
+	if (randomInt > chanceOfBuff)
+		return 2;
+}
+
+static int pLevel (int experience)
+{
+	int playerLevel = 1;
+	int chanceOfBuff = 0;
+
+	switch (experience)
+	{
+		case 100 :
+			playerLevel = 2;
+			chanceOfBuff = 40;
+			break;
+		case 200 :
+			playerLevel = 3;
+			chanceOfBuff = 50;
+			break;
+		case 400 :
+			playerLevel = 4;
+			chanceOfBuff = 60;
+			break;
+		case 800 :
+			playerLevel = 5;
+			chanceOfBuff = 70;
+			break;
+		case 1600 :
+			playerLevel = 6;
+			chanceOfBuff = 80;
+			break;
+		default :
+			playerLevel = 1;
+			chanceOfBuff = 0;
+			break;
+	}
+}
 
 /*
 =================
@@ -727,8 +778,8 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 //	gi.multicast (start, MULTICAST_PHS);
 	if (water)
 	{
-		gi.WriteByte (svc_temp_entity);
-		gi.WriteByte (TE_RAILTRAIL);
+		gi.WriteByte (svc_temp_entity);//temp entity are purely cosmetic
+		gi.WriteByte (TE_RAILTRAIL);//more in g_shared. not all defined tho
 		gi.WritePosition (start);
 		gi.WritePosition (tr.endpos);
 		gi.multicast (tr.endpos, MULTICAST_PHS);
