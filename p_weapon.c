@@ -1287,6 +1287,9 @@ void weapon_railgun_fire (edict_t *ent)
 	int			damage;
 	int			kick;
 
+	
+	//lastFire = level.time;
+
 	if (deathmatch->value)
 	{	// normal damage is too extreme in dm
 		damage = 100;

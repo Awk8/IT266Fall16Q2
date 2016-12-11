@@ -4,8 +4,9 @@ float prevFire;
 int initCall = 1;
 int experience = 0;
 void blaster_think (edict_t *self);
+int initTime = 0;
 
-static void randomEffect (int playerLevel)
+static void randomEffect (int playerLevel, edict_t *self)
 {
 	int randomInt, i, choose, buffChance, buffDeBuff;
 	int randomList[10];
@@ -115,7 +116,7 @@ static int buffOrDebuff (int chanceOfBuff)
 	}
 }
 
-static int pLevel (int experience)
+static int pLevel (int experience, edict_t *self)
 {
 	int playerLevel = 1;
 
@@ -123,24 +124,38 @@ static int pLevel (int experience)
 	{
 		case 100 :
 			playerLevel = 2;
+			self->max_health = 250;
+			self->health = 250;
 			break;
 		case 200 :
 			playerLevel = 3;
+			self->max_health = 300;
+			self->health = 300;
 			break;
 		case 400 :
 			playerLevel = 4;
+			self->max_health = 350;
+			self->health = 350;
 			break;
 		case 800 :
 			playerLevel = 5;
+			self->max_health = 400;
+			self->health = 400;
 			break;
 		case 1600 :
 			playerLevel = 6;
+			self->max_health = 500;
+			self->health = 500;
 			break;
 		case 3200 :
 			playerLevel = 7;
+			self->max_health = 700;
+			self->health = 700;
 			break;
 		case 6500 :
 			playerLevel = 8;
+			self->max_health = 1000;
+			self->health = 1000;
 			break;
 
 		default :
@@ -512,40 +527,27 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 
 void blaster_think (edict_t *self)
 {
-	vec3_t aimdir0, aimdir1;
-	int fireTime;
-
 	if (!self)
 		return;
-
-	//self->nextthink = level.time + 20;
-	fireTime = level.time;
-
-	aimdir0[0] = 0;
-	aimdir0[1] = 1;
-	aimdir0[2] = 0;
-
-	aimdir1[0] = 0;
-	aimdir1[1] = -1;
-	aimdir1[2] = 0;
-
-	fire_blaster (self->owner, self->s.origin, aimdir0, 1000, 1000, EF_BLASTER, false, fireTime);
-	fire_blaster (self->owner, self->s.origin, aimdir1, 1000, 1000, EF_BLASTER, false, fireTime);
 }
 
 void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper, float fireTime)
 {
 	edict_t	*bolt;
 	trace_t	tr;
+	int mod;
 
 	if (initCall == 1)
 		prevFire = fireTime;
 	
-	if (fireTime  - prevFire < 20 && initCall == 0)
+	if (fireTime  - prevFire < 10 && initCall == 0)
 	{
 		self->health -= 5;
 		if (self->health <= 0)
+		{
+			mod = MOD_UNAUTH_FIRE;
 			player_die(self, self, self, 5, start);
+		}
 
 		return;
 	}

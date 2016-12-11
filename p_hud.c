@@ -453,6 +453,39 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_TIMER] = 0;
 	}
 
+	if (ent->client->attrition_framenum > level.framenum)
+	{
+		ent->client->ps.stats[STAT_ATTRITION] = 10;//Change to text
+		ent->client->ps.stats[STAT_TIME_TO_ATTRITION] = (ent->client->attrition_framenum - level.framenum)/10;
+	}
+	else
+	{
+		ent->client->ps.stats[STAT_ATTRITION] = 0;
+		ent->client->ps.stats[STAT_TIME_TO_ATTRITION] = 0;
+	}
+
+		if (ent->client->blaster_framenum > level.framenum)
+	{
+		ent->client->ps.stats[STAT_BLASTER_FIRE] = 10;//Change to text
+		ent->client->ps.stats[STAT_TIME_BLASTER_FIRE] = (ent->client->blaster_framenum - level.framenum)/10;
+	}
+	else
+	{
+		ent->client->ps.stats[STAT_BLASTER_FIRE] = 0;
+		ent->client->ps.stats[STAT_TIME_BLASTER_FIRE] = 0;
+	}
+
+	if (ent->client->buff_framenum > level.framenum)
+	{
+		ent->client->ps.stats[STAT_BUFF] = 10;//Change to text
+		ent->client->ps.stats[STAT_CUR_BUFF_TIME] = (ent->client->buff_framenum - level.framenum)/10;
+	}
+	else
+	{
+		ent->client->ps.stats[STAT_BUFF] = 0;
+		ent->client->ps.stats[STAT_CUR_BUFF_TIME] = 0;
+	}
+
 	//
 	// selected item
 	//

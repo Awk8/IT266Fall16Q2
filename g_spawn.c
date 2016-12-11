@@ -1,6 +1,9 @@
 
 #include "g_local.h"
 
+//int initCount = 1;
+//int initTime;
+
 typedef struct
 {
 	char	*name;
@@ -506,6 +509,12 @@ void SpawnEntities (char *mapname, char *entities, char *spawnpoint)
 	int			i;
 	float		skill_level;
 
+	//if (initCount == 1)
+	//{
+	//	initTime = level.time;
+	//	initCount = 0;
+	//}
+
 	skill_level = floor (skill->value);
 	if (skill_level < 0)
 		skill_level = 0;
@@ -676,6 +685,33 @@ char *single_statusbar =
 "	xv	296 "
 "	pic	9 "
 "endif "
+        
+// Attrition		
+"if 16 "			// If STAT_TIMER2_ICON is not zero, then do
+"	yb	-48 "		
+"	xr	-58 "		
+"	num	2	17 "	// Display 2-digits with value from stat-array at index 17
+"	xr	-24 "		
+"	pic	16 "		// Display icon
+"endif "			
+        
+// BlasterFire		
+"if 18 "			//If STAT_TIMER3_ICON is not zero, then do
+"	yb	-72 "		
+"	xr	-58 "		
+"	num	2	19 "	//Display 2-digits with value from stat-array at index 19
+"	xr	-24 "		
+"	pic	18 "		//Display icon
+"endif "			
+
+// Buff			
+"if 20 "			//If STAT_TIMER4_ICON is not zero, then do
+"	yb	-96 "		
+"	xr	-58 "		
+"	num	2	21 "	//Display 2-digits with value from stat-array at index 21
+"	xr	-24 "		 
+"	pic	20 "		//Display icon
+"endif "			
 
 //  help / weapon icon 
 "if 11 "

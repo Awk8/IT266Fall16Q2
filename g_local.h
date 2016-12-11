@@ -481,6 +481,7 @@ extern	int	body_armor_index;
 #define MOD_HIT				32
 #define MOD_TARGET_BLASTER	33
 #define MOD_TARGET_RAILGUN	34
+#define MOD_UNAUTH_FIRE		35
 #define MOD_FRIENDLY_FIRE	0x8000000
 
 extern	int	meansOfDeath;
@@ -927,6 +928,9 @@ struct gclient_s
 	float		invincible_framenum;
 	float		breather_framenum;
 	float		enviro_framenum;
+	float		attrition_framenum;
+	float		blaster_framenum;
+	float		buff_framenum; // need to use
 
 	qboolean	grenade_blew_up;
 	float		grenade_time;

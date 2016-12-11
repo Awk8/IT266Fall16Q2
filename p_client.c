@@ -272,6 +272,8 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 			case MOD_BFG_BLAST:
 				message = "should have used a smaller gun";
 				break;
+			case MOD_UNAUTH_FIRE:
+				message = "Kept firing when they shouldn't have";
 			default:
 				if (IsNeutral(self))
 					message = "killed itself";
