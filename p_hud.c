@@ -29,6 +29,9 @@ void MoveClientToIntermission (edict_t *ent)
 	ent->client->invincible_framenum = 0;
 	ent->client->breather_framenum = 0;
 	ent->client->enviro_framenum = 0;
+	ent->client->attrition_framenum = 0;
+	ent->client->blaster_framenum = 0;
+	ent->client->buff_framenum = 0;
 	ent->client->grenade_blew_up = false;
 	ent->client->grenade_time = 0;
 

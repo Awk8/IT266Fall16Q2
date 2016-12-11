@@ -1,206 +1,11 @@
 #include "g_local.h"
 
+void blaster_think (edict_t *self);
+
 float prevFire;
 int initCall = 1;
 int experience = 0;
-void blaster_think (edict_t *self);
-int initTime = 0;
-
-static void randomEffect (int playerLevel, edict_t *self)
-{
-	int randomInt, i, choose, buffChance, buffDeBuff;
-	int randomList[10];
-
-	buffChance = chanceOfBuff(playerLevel);
-	buffDeBuff = buffOrDebuff(buffChance);
-
-	if (playerLevel == 1)
-		return; //No effect
-
-	srand(time(0));
-	for (i = 0; i < 10; i++)
-		randomList[i] = rand() % 5;
-
-	choose = rand() % 10;
-
-	if (randomList[choose] != NULL)
-		randomInt = randomList[choose];
-	else
-		randomInt = randomList[7];
-
-	if (buffDeBuff == 1)
-	{
-		switch(randomInt)
-		{
-			case 0 :
-				//Buff1(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 1 :
-				//Buff2(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 2 :
-				//Buff3(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 3 :
-				//Buff4(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 4 :
-				//Buff5(playerLevel);
-				//Call effect Hud Message
-				break;
-		}
-	}
-	else if (buffDeBuff == 2)
-	{
-		switch(randomInt)
-		{
-			case 0 :
-				//Debuff1(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 1 :
-				//Debuff2(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 2 :
-				//Debuff3(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 3 :
-				//Debuff4(playerLevel);
-				//Call effect Hud Message
-				break;
-			case 4 :
-				//Debuff5(playerLevel);
-				//Call effect Hud Message
-				break;
-		}
-	}
-	else
-		return;
-	return;
-}
-
-static int buffOrDebuff (int chanceOfBuff)
-{
-	int randomInt, i, choose;
-	int randomList[10];
-
-	if (chanceOfBuff == 0)
-		return 0; //Level 1 player has no chance of effects
-
-	srand(time(0));
-	for (i = 0; i < 10; i++)
-		randomList[i] = rand() % 100;
-
-	choose = rand() % 10;
-
-	if (randomList[choose] != NULL)
-		randomInt = randomList[choose];
-	else
-		randomInt = randomList[4];
-
-	if (randomInt < chanceOfBuff)
-	{
-		//Call Buff hud message
-		return 1; //Buff player/Debuff enemy
-	}
-	if (randomInt > chanceOfBuff)
-	{
-		//Call Debuff hud message
-		return 2; //Debuff player/Buff enemy
-	}
-}
-
-static int pLevel (int experience, edict_t *self)
-{
-	int playerLevel = 1;
-
-	switch (experience)
-	{
-		case 100 :
-			playerLevel = 2;
-			self->max_health = 250;
-			self->health = 250;
-			break;
-		case 200 :
-			playerLevel = 3;
-			self->max_health = 300;
-			self->health = 300;
-			break;
-		case 400 :
-			playerLevel = 4;
-			self->max_health = 350;
-			self->health = 350;
-			break;
-		case 800 :
-			playerLevel = 5;
-			self->max_health = 400;
-			self->health = 400;
-			break;
-		case 1600 :
-			playerLevel = 6;
-			self->max_health = 500;
-			self->health = 500;
-			break;
-		case 3200 :
-			playerLevel = 7;
-			self->max_health = 700;
-			self->health = 700;
-			break;
-		case 6500 :
-			playerLevel = 8;
-			self->max_health = 1000;
-			self->health = 1000;
-			break;
-
-		default :
-			playerLevel = 1;
-			break;
-
-		return playerLevel;
-	}
-}
-
-static int chanceOfBuff (int playerLevel)
-{
-	int chanceOfBuff = 0;
-
-	switch (playerLevel)
-	{
-		case 2 :
-			chanceOfBuff = 40;
-			break;
-		case 3 :
-			chanceOfBuff = 50;
-			break;
-		case 4 :
-			chanceOfBuff = 60;
-			break;
-		case 5 :
-			chanceOfBuff = 70;
-			break;
-		case 6 :
-			chanceOfBuff = 80;
-			break;
-		case 7 :
-			chanceOfBuff = 90;
-			break;
-		case 8 :
-			chanceOfBuff = 100;
-			break;
-
-		default :
-			chanceOfBuff = 0;
-			break;
-	}
-
-	return chanceOfBuff;
-}
+//int attritionTime = 0;
 
 /*
 =================
@@ -537,6 +342,8 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	trace_t	tr;
 	int mod;
 
+	self->attritionTime = level.time;
+
 	if (initCall == 1)
 		prevFire = fireTime;
 	
@@ -872,6 +679,8 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	edict_t		*ignore;
 	int			mask;
 	qboolean	water;
+
+	self->attritionTime = level.time;
 
 	VectorMA (start, 8192, aimdir, end);
 	VectorCopy (start, from);

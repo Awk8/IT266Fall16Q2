@@ -482,6 +482,8 @@ extern	int	body_armor_index;
 #define MOD_TARGET_BLASTER	33
 #define MOD_TARGET_RAILGUN	34
 #define MOD_UNAUTH_FIRE		35
+#define MOD_ATTRITION		36
+#define MOD_BUFF			37
 #define MOD_FRIENDLY_FIRE	0x8000000
 
 extern	int	meansOfDeath;
@@ -825,6 +827,7 @@ typedef struct
 	int			health;
 	int			max_health;
 	int			savedFlags;
+	int			attritionTime;
 
 	int			selected_item;
 	int			inventory[MAX_ITEMS];
@@ -960,6 +963,7 @@ struct edict_s
 
 	qboolean	inuse;
 	int			linkcount;
+	int			attritionTime;
 
 	// FIXME: move these fields to a server private sv_entity_t
 	link_t		area;				// linked to a division node or leaf

@@ -3,6 +3,214 @@
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
+int cnt = 0;
+
+static void randomEffect (int playerLevel, edict_t *self)
+{
+	int randomInt, i, choose, buffChance, buffDeBuff;
+	int randomList[10];
+
+	buffChance = chanceOfBuff(playerLevel);
+	buffDeBuff = buffOrDebuff(buffChance);
+
+	if (playerLevel == 1)
+		return; //No effect
+
+	srand(time(0));
+	for (i = 0; i < 10; i++)
+		randomList[i] = rand() % 5;
+
+	choose = rand() % 10;
+
+	if (randomList[choose] != NULL)
+		randomInt = randomList[choose];
+	else
+		randomInt = randomList[7];
+
+	if (buffDeBuff == 1)
+	{
+		switch(randomInt)
+		{
+			case 0 :
+				//Buff1(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 1 :
+				//Buff2(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 2 :
+				//Buff3(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 3 :
+				//Buff4(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 4 :
+				//Buff5(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+		}
+	}
+	else if (buffDeBuff == 2)
+	{
+		switch(randomInt)
+		{
+			case 0 :
+				//Debuff1(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 1 :
+				//Debuff2(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 2 :
+				//Debuff3(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 3 :
+				//Debuff4(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 4 :
+				//Debuff5(playerLevel);
+				self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+		}
+	}
+	else
+		return;
+	return;
+}
+
+static int buffOrDebuff (int chanceOfBuff)
+{
+	int randomInt, i, choose;
+	int randomList[10];
+
+	if (chanceOfBuff == 0)
+		return 0; //Level 1 player has no chance of effects
+
+	srand(time(0));
+	for (i = 0; i < 10; i++)
+		randomList[i] = rand() % 100;
+
+	choose = rand() % 10;
+
+	if (randomList[choose] != NULL)
+		randomInt = randomList[choose];
+	else
+		randomInt = randomList[4];
+
+	if (randomInt < chanceOfBuff)
+	{
+		//Call Buff hud message
+		return 1; //Buff player/Debuff enemy
+	}
+	if (randomInt > chanceOfBuff)
+	{
+		//Call Debuff hud message
+		return 2; //Debuff player/Buff enemy
+	}
+}
+
+static int pLevel (int experience, edict_t *self)
+{
+	int playerLevel = 1;
+
+	switch (experience)
+	{
+		case 100 :
+			playerLevel = 2;
+			self->max_health = 250;
+			self->health = 250;
+			break;
+		case 200 :
+			playerLevel = 3;
+			self->max_health = 300;
+			self->health = 300;
+			break;
+		case 400 :
+			playerLevel = 4;
+			self->max_health = 350;
+			self->health = 350;
+			break;
+		case 800 :
+			playerLevel = 5;
+			self->max_health = 400;
+			self->health = 400;
+			break;
+		case 1600 :
+			playerLevel = 6;
+			self->max_health = 500;
+			self->health = 500;
+			break;
+		case 3200 :
+			playerLevel = 7;
+			self->max_health = 700;
+			self->health = 700;
+			break;
+		case 6500 :
+			playerLevel = 8;
+			self->max_health = 1000;
+			self->health = 1000;
+			break;
+
+		default :
+			playerLevel = 1;
+			break;
+
+		return playerLevel;
+	}
+}
+
+static int chanceOfBuff (int playerLevel)
+{
+	int chanceOfBuff = 0;
+
+	switch (playerLevel)
+	{
+		case 2 :
+			chanceOfBuff = 40;
+			break;
+		case 3 :
+			chanceOfBuff = 50;
+			break;
+		case 4 :
+			chanceOfBuff = 60;
+			break;
+		case 5 :
+			chanceOfBuff = 70;
+			break;
+		case 6 :
+			chanceOfBuff = 80;
+			break;
+		case 7 :
+			chanceOfBuff = 90;
+			break;
+		case 8 :
+			chanceOfBuff = 100;
+			break;
+
+		default :
+			chanceOfBuff = 0;
+			break;
+	}
+
+	return chanceOfBuff;
+}
+
 void SP_misc_teleporter_dest (edict_t *ent);
 
 //
@@ -239,6 +447,12 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 		case MOD_TARGET_BLASTER:
 			message = "got blasted";
 			break;
+		case MOD_UNAUTH_FIRE:
+				message = "Kept firing when they shouldn't have";
+		case MOD_ATTRITION:
+				message = "Didn't fire soon enough";
+		case MOD_BUFF:
+				message = "Died to their debuff";
 		case MOD_BOMB:
 		case MOD_SPLASH:
 		case MOD_TRIGGER_HURT:
@@ -274,6 +488,10 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				break;
 			case MOD_UNAUTH_FIRE:
 				message = "Kept firing when they shouldn't have";
+			case MOD_ATTRITION:
+				message = "Didn't fire soon enough";
+			case MOD_BUFF:
+				message = "Died to their debuff";
 			default:
 				if (IsNeutral(self))
 					message = "killed itself";
@@ -366,6 +584,12 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 				message = "tried to invade";
 				message2 = "'s personal space";
 				break;
+			case MOD_UNAUTH_FIRE:
+				message = "Kept firing when they shouldn't have";
+			case MOD_ATTRITION:
+				message = "Didn't fire soon enough";
+			case MOD_BUFF:
+				message = "Died to their debuff";
 			}
 			if (message)
 			{
@@ -530,6 +754,9 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	self->client->invincible_framenum = 0;
 	self->client->breather_framenum = 0;
 	self->client->enviro_framenum = 0;
+	self->client->attrition_framenum = 0;
+	self->client->blaster_framenum = 0;
+	self->client->buff_framenum = 0;
 	self->flags &= ~FL_POWER_ARMOR;
 
 	if (self->health < -40)
@@ -613,6 +840,7 @@ void InitClientPersistant (gclient_t *client)
 
 	client->pers.health			= 200;
 	client->pers.max_health		= 200;
+	//client->pers.attritionTime		= level.time;
 
 	client->pers.max_bullets	= 0;
 	client->pers.max_shells		= 0;
@@ -1578,6 +1806,24 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
+	int mod;
+
+
+	if (level.time - ent->attritionTime > 5)
+	{
+		if (ent->health > 0)
+		{
+			ent->health -= 1;
+			cnt += 1;
+		}
+		if (ent->health <= 0)
+		{			
+			mod = MOD_ATTRITION;
+			cnt = 0;
+			//ent->attritionTime = level.time;
+			player_die(ent, ent, ent, 5, ent->move_origin);
+		}
+	}
 
 	level.current_entity = ent;
 	client = ent->client;
