@@ -828,6 +828,8 @@ typedef struct
 	int			max_health;
 	int			savedFlags;
 	int			attritionTime;
+	int			experience;
+	int			playerLevel;
 
 	int			selected_item;
 	int			inventory[MAX_ITEMS];
@@ -900,6 +902,9 @@ struct gclient_s
 	vec3_t		damage_from;		// origin for vector calculation
 
 	float		killer_yaw;			// when dead, look at killer
+	int			attritionTime;
+	int			experience;
+	int			playerLevel;
 
 	weaponstate_t	weaponstate;
 	vec3_t		kick_angles;	// weapon kicks
@@ -934,6 +939,7 @@ struct gclient_s
 	float		attrition_framenum;
 	float		blaster_framenum;
 	float		buff_framenum; // need to use
+	float		playerLevelDisp;
 
 	qboolean	grenade_blew_up;
 	float		grenade_time;

@@ -739,6 +739,7 @@ void button_killed (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 {
 	self->activator = attacker;
 	self->health = self->max_health;
+	//self->attritionTime = level.time;
 	self->takedamage = DAMAGE_NO;
 	button_fire (self);
 }

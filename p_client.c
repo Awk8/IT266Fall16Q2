@@ -5,15 +5,40 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 int cnt = 0;
 
-static void randomEffect (int playerLevel, edict_t *self)
+static void Buff1(int buffDebuff, edict_t *self)
+{
+
+}
+
+static void Buff2(int buffDebuff, edict_t *self)
+{
+
+}
+
+static void Buff3(int buffDebuff, edict_t *self)
+{
+
+}
+
+static void Buff4(int buffDebuff, edict_t *self)
+{
+
+}
+
+static void Buff5(int buffDebuff, edict_t *self)
+{
+
+}
+
+static void randomEffect (edict_t *self)
 {
 	int randomInt, i, choose, buffChance, buffDeBuff;
 	int randomList[10];
 
-	buffChance = chanceOfBuff(playerLevel);
+	buffChance = chanceOfBuff(self);
 	buffDeBuff = buffOrDebuff(buffChance);
 
-	if (playerLevel == 1)
+	if (self->client->playerLevel == 1)
 		return; //No effect
 
 	srand(time(0));
@@ -125,61 +150,59 @@ static int buffOrDebuff (int chanceOfBuff)
 	}
 }
 
-static int pLevel (int experience, edict_t *self)
+static void pLevel (edict_t *self)
 {
-	int playerLevel = 1;
+	self->client->playerLevel = 1;
 
-	switch (experience)
+	switch (self->client->experience)
 	{
 		case 100 :
-			playerLevel = 2;
+			self->client->playerLevel = 2;
+			self->max_health = 150; //->client?
+			self->health = 150;
+			break;
+		case 200 :
+			self->client->playerLevel = 3;
+			self->max_health = 200;
+			self->health = 200;
+			break;
+		case 400 :
+			self->client->playerLevel = 4;
 			self->max_health = 250;
 			self->health = 250;
 			break;
-		case 200 :
-			playerLevel = 3;
+		case 800 :
+			self->client->playerLevel = 5;
 			self->max_health = 300;
 			self->health = 300;
 			break;
-		case 400 :
-			playerLevel = 4;
+		case 1600 :
+			self->client->playerLevel = 6;
 			self->max_health = 350;
 			self->health = 350;
 			break;
-		case 800 :
-			playerLevel = 5;
+		case 3200 :
+			self->client->playerLevel = 7;
 			self->max_health = 400;
 			self->health = 400;
 			break;
-		case 1600 :
-			playerLevel = 6;
+		case 6500 :
+			self->client->playerLevel = 8;
 			self->max_health = 500;
 			self->health = 500;
 			break;
-		case 3200 :
-			playerLevel = 7;
-			self->max_health = 700;
-			self->health = 700;
-			break;
-		case 6500 :
-			playerLevel = 8;
-			self->max_health = 1000;
-			self->health = 1000;
-			break;
 
 		default :
-			playerLevel = 1;
+			self->client->playerLevel = 1;
 			break;
-
-		return playerLevel;
 	}
 }
 
-static int chanceOfBuff (int playerLevel)
+static int chanceOfBuff (edict_t *self)
 {
 	int chanceOfBuff = 0;
 
-	switch (playerLevel)
+	switch (self->client->playerLevel)
 	{
 		case 2 :
 			chanceOfBuff = 40;
@@ -759,6 +782,8 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	self->client->buff_framenum = 0;
 	self->flags &= ~FL_POWER_ARMOR;
 
+	//self->client->attritionTime = 0;
+
 	if (self->health < -40)
 	{	// gib
 		gi.sound (self, CHAN_BODY, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
@@ -840,7 +865,6 @@ void InitClientPersistant (gclient_t *client)
 
 	client->pers.health			= 200;
 	client->pers.max_health		= 200;
-	//client->pers.attritionTime		= level.time;
 
 	client->pers.max_bullets	= 0;
 	client->pers.max_shells		= 0;
@@ -882,6 +906,7 @@ void SaveClientData (void)
 			continue;
 		game.clients[i].pers.health = ent->health;
 		game.clients[i].pers.max_health = ent->max_health;
+		//game.clients[i].pers.attritionTime = ent->attritionTime;
 		game.clients[i].pers.savedFlags = (ent->flags & (FL_GODMODE|FL_NOTARGET|FL_POWER_ARMOR));
 		if (coop->value)
 			game.clients[i].pers.score = ent->client->resp.score;
@@ -892,6 +917,7 @@ void FetchClientEntData (edict_t *ent)
 {
 	ent->health = ent->client->pers.health;
 	ent->max_health = ent->client->pers.max_health;
+	//ent->attritionTime = ent->client->pers.attritionTime;
 	ent->flags |= ent->client->pers.savedFlags;
 	if (coop->value)
 		ent->client->resp.score = ent->client->pers.score;
@@ -1809,18 +1835,19 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	int mod;
 
 
-	if (level.time - ent->attritionTime > 5)
+	if (level.time - ent->client->attritionTime > 5)
 	{
 		if (ent->health > 0)
 		{
-			ent->health -= 1;
+			if (cnt % 4 == 0)
+				ent->health -= 1;
 			cnt += 1;
 		}
 		if (ent->health <= 0)
 		{			
 			mod = MOD_ATTRITION;
 			cnt = 0;
-			//ent->attritionTime = level.time;
+			ent->client->attritionTime = level.time;
 			player_die(ent, ent, ent, 5, ent->move_origin);
 		}
 	}

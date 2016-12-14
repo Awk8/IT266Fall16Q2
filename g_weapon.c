@@ -342,7 +342,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	trace_t	tr;
 	int mod;
 
-	self->attritionTime = level.time;
+	self->client->attritionTime = level.time;
 
 	if (initCall == 1)
 		prevFire = fireTime;
@@ -680,7 +680,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			mask;
 	qboolean	water;
 
-	self->attritionTime = level.time;
+ 	self->client->attritionTime = level.time;
 
 	VectorMA (start, 8192, aimdir, end);
 	VectorCopy (start, from);
