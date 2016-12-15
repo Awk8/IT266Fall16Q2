@@ -4,35 +4,34 @@
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 int cnt = 0;
+int buffed = 0;
+int buffCount = 0;
+int currBuffed = 0;
+int time0 = 0;
 
-static void Buff1(int buffDebuff, edict_t *self)
-{
+///
+/// Player Buffs:
+///
 
-}
+int ApplyRegenHealth = 0;//Health Regen
+int ApplyPoison = 0;//Poison
+int ApplySpeedBoostOrReduce = 0;//Speed
+int ApplyIncreaseOrDecreaseDamage = 0;//Damage Increase
+int ApplyImmortality = 0;//Immortality
 
-static void Buff2(int buffDebuff, edict_t *self)
-{
+///
+///Enemy Buffs:
+///
 
-}
-
-static void Buff3(int buffDebuff, edict_t *self)
-{
-
-}
-
-static void Buff4(int buffDebuff, edict_t *self)
-{
-
-}
-
-static void Buff5(int buffDebuff, edict_t *self)
-{
-
-}
+int ApplyEnemyRegenHealth = 0;//Health Regen
+int ApplyEnemyPoison = 0;//Poison
+int ApplyEnemySpeedBoostOrReduce = 0;//Speed
+int ApplyEnemyIncreaseOrDecreaseDamage = 0;//Damage Increase
+int ApplyEnemyImmortality = 0;//Immortality
 
 static void randomEffect (edict_t *self)
 {
-	int randomInt, i, choose, buffChance, buffDeBuff;
+	int randomInt, i, choose, buffChance, buffDeBuff, tmpTime;
 	int randomList[10];
 
 	buffChance = chanceOfBuff(self);
@@ -52,34 +51,41 @@ static void randomEffect (edict_t *self)
 	else
 		randomInt = randomList[7];
 
+	if (currBuffed == 1)
+		return;
+
+	time0 = level.time;
+
 	if (buffDeBuff == 1)
 	{
 		switch(randomInt)
 		{
 			case 0 :
-				//Buff1(playerLevel);
+				ApplyRegenHealth = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 1 :
-				//Buff2(playerLevel);
+				ApplyPoison = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 2 :
-				//Buff3(playerLevel);
+				ApplyIncreaseOrDecreaseDamage = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 3 :
-				//Buff4(playerLevel);
+				ApplySpeedBoostOrReduce = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 4 :
-				//Buff5(playerLevel);
-				self->client->buff_framenum = level.framenum + 300;
+				ApplyImmortality = 1;
+				self->client->buff_framenum = level.framenum + 100;
 				//Call effect Hud Message
+				break;
+			default:
 				break;
 		}
 	}
@@ -88,29 +94,31 @@ static void randomEffect (edict_t *self)
 		switch(randomInt)
 		{
 			case 0 :
-				//Debuff1(playerLevel);
+				ApplyEnemyRegenHealth = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 1 :
-				//Debuff2(playerLevel);
+				ApplyEnemyPoison = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 2 :
-				//Debuff3(playerLevel);
+				ApplyEnemyIncreaseOrDecreaseDamage = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 3 :
-				//Debuff4(playerLevel);
+				ApplyEnemySpeedBoostOrReduce = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
 			case 4 :
-				//Debuff5(playerLevel);
+				ApplyEnemyImmortality = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
+				break;
+			default:
 				break;
 		}
 	}
@@ -191,7 +199,6 @@ static void pLevel (edict_t *self)
 			self->max_health = 500;
 			self->health = 500;
 			break;
-
 		default :
 			self->client->playerLevel = 1;
 			break;
@@ -1849,6 +1856,197 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			cnt = 0;
 			ent->client->attritionTime = level.time;
 			player_die(ent, ent, ent, 5, ent->move_origin);
+		}
+	}
+
+	if (ApplyRegenHealth = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				if (buffCount % 6 == 0 && ent->health != ent->max_health)
+					ent->health += 1;
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}
+	}
+	if (ApplyPoison = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{	
+				if (ent->health > 0)
+				{
+					if (cnt % 6 == 0)
+						ent->health -= 1;
+					buffCount += 1;
+				}
+				if (ent->health <= 0)
+					player_die(ent, ent, ent, 5, ent->move_origin);
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+	if (ApplySpeedBoostOrReduce = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+		//Choose boost/reduce randomly
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+	if (ApplyIncreaseOrDecreaseDamage = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+		//Choose boost/reduce randomly
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+	if (ApplyImmortality = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+
+	if (ApplyEnemyRegenHealth = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+	if (ApplyEnemyPoison = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+    if (ApplyEnemySpeedBoostOrReduce = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+	if (ApplyEnemyIncreaseOrDecreaseDamage = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+	if (ApplyEnemyImmortality = 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+
+		if (buffed == 1)
+		{
+			if (level.time - time0 < 30)
+			{
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
 		}
 	}
 
