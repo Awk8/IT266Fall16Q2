@@ -290,6 +290,8 @@ void gladiator_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int da
 {
 	int		n;
 
+	attacker->client->experience += 400;
+
 // check for gib
 	if (self->health <= self->gib_health)
 	{
@@ -343,7 +345,7 @@ void SP_monster_gladiator (edict_t *self)
 	VectorSet (self->mins, -32, -32, -24);
 	VectorSet (self->maxs, 32, 32, 64);
 
-	self->health = 400;
+	self->health = 600;
 	self->gib_health = -175;
 	self->mass = 400;
 

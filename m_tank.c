@@ -735,6 +735,8 @@ void tank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage,
 {
 	int		n;
 
+	attacker->client->experience += 500;
+
 // check for gib
 	if (self->health <= self->gib_health)
 	{
@@ -803,7 +805,7 @@ void SP_monster_tank (edict_t *self)
 
 	if (strcmp(self->classname, "monster_tank_commander") == 0)
 	{
-		self->health = 1000;
+		self->health = 1500;
 		self->gib_health = -225;
 	}
 	else

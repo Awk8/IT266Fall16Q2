@@ -637,6 +637,8 @@ void BossExplode (edict_t *self)
 
 void supertank_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
+	attacker->client->experience += 800;
+
 	gi.sound (self, CHAN_VOICE, sound_death, 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_NO;
@@ -674,7 +676,7 @@ void SP_monster_supertank (edict_t *self)
 	VectorSet (self->mins, -64, -64, 0);
 	VectorSet (self->maxs, 64, 64, 112);
 
-	self->health = 1500;
+	self->health = 2500;
 	self->gib_health = -500;
 	self->mass = 800;
 

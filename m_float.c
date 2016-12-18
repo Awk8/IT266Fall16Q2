@@ -583,6 +583,7 @@ void floater_dead (edict_t *self)
 
 void floater_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
+	attacker->client->experience += 100;
 	gi.sound (self, CHAN_VOICE, sound_death1, 1, ATTN_NORM, 0);
 	BecomeExplosion1(self);
 }
@@ -615,7 +616,7 @@ void SP_monster_floater (edict_t *self)
 	VectorSet (self->mins, -24, -24, -24);
 	VectorSet (self->maxs, 24, 24, 32);
 
-	self->health = 200;
+	self->health = 300;
 	self->gib_health = -80;
 	self->mass = 300;
 

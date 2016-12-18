@@ -453,6 +453,8 @@ void parasite_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 {
 	int		n;
 
+	attacker->client->experience += 100;
+
 // check for gib
 	if (self->health <= self->gib_health)
 	{
@@ -510,7 +512,7 @@ void SP_monster_parasite (edict_t *self)
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
 
-	self->health = 175;
+	self->health = 250;
 	self->gib_health = -50;
 	self->mass = 250;
 

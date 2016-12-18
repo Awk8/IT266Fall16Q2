@@ -164,37 +164,37 @@ static void pLevel (edict_t *self)
 
 	switch (self->client->experience)
 	{
-		case 100 :
+		case 500 :
 			self->client->playerLevel = 2;
 			self->max_health = 150; //->client?
 			self->health = 150;
 			break;
-		case 200 :
+		case 1200 :
 			self->client->playerLevel = 3;
 			self->max_health = 200;
 			self->health = 200;
 			break;
-		case 400 :
+		case 2100 :
 			self->client->playerLevel = 4;
 			self->max_health = 250;
 			self->health = 250;
 			break;
-		case 800 :
+		case 3200 :
 			self->client->playerLevel = 5;
 			self->max_health = 300;
 			self->health = 300;
 			break;
-		case 1600 :
+		case 4500 :
 			self->client->playerLevel = 6;
 			self->max_health = 350;
 			self->health = 350;
 			break;
-		case 3200 :
+		case 6000 :
 			self->client->playerLevel = 7;
 			self->max_health = 400;
 			self->health = 400;
 			break;
-		case 6500 :
+		case 7700 :
 			self->client->playerLevel = 8;
 			self->max_health = 500;
 			self->health = 500;

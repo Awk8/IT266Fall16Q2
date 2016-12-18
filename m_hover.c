@@ -523,6 +523,8 @@ void hover_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 {
 	int		n;
 
+	attacker->client->experience += 150;
+
 // check for gib
 	if (self->health <= self->gib_health)
 	{
@@ -577,7 +579,7 @@ void SP_monster_hover (edict_t *self)
 	VectorSet (self->mins, -24, -24, -24);
 	VectorSet (self->maxs, 24, 24, 32);
 
-	self->health = 240;
+	self->health = 350;
 	self->gib_health = -100;
 	self->mass = 150;
 

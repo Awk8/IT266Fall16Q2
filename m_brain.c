@@ -568,6 +568,8 @@ void brain_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage
 {
 	int		n;
 
+	attacker->client->experience += 300;
+
 	self->s.effects = 0;
 	self->monsterinfo.power_armor_type = POWER_ARMOR_NONE;
 
@@ -628,7 +630,7 @@ void SP_monster_brain (edict_t *self)
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, 32);
 
-	self->health = 300;
+	self->health = 500;
 	self->gib_health = -150;
 	self->mass = 400;
 

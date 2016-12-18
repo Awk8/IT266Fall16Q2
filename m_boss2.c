@@ -487,6 +487,8 @@ void boss2_dead (edict_t *self)
 
 void boss2_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
+	attacker->client->experience += 1000;
+
 	gi.sound (self, CHAN_VOICE, sound_death, 1, ATTN_NONE, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_NO;
@@ -636,7 +638,7 @@ void SP_monster_boss2 (edict_t *self)
 	VectorSet (self->mins, -56, -56, 0);
 	VectorSet (self->maxs, 56, 56, 80);
 
-	self->health = 2000;
+	self->health = 3500;
 	self->gib_health = -200;
 	self->mass = 1000;
 

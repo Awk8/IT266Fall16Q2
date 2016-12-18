@@ -563,6 +563,8 @@ void insane_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 {
 	int		n;
 
+	attacker->client->experience += 50;
+
 	if (self->health <= self->gib_health)
 	{
 		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_IDLE, 0);
@@ -628,7 +630,7 @@ void SP_misc_insane (edict_t *self)
 	VectorSet (self->mins, -16, -16, -24);
 	VectorSet (self->maxs, 16, 16, 32);
 
-	self->health = 100;
+	self->health = 150;
 	self->gib_health = -50;
 	self->mass = 300;
 

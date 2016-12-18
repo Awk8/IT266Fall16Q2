@@ -556,6 +556,8 @@ void mutant_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 {
 	int		n;
 
+	attacker->client->experience += 150;
+
 	if (self->health <= self->gib_health)
 	{
 		gi.sound (self, CHAN_VOICE, gi.soundindex ("misc/udeath.wav"), 1, ATTN_NORM, 0);
@@ -617,7 +619,7 @@ void SP_monster_mutant (edict_t *self)
 	VectorSet (self->mins, -32, -32, -24);
 	VectorSet (self->maxs, 32, 32, 48);
 
-	self->health = 300;
+	self->health = 500;
 	self->gib_health = -120;
 	self->mass = 300;
 

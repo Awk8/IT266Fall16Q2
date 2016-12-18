@@ -569,6 +569,8 @@ void jorg_dead (edict_t *self)
 
 void jorg_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
+	attacker->client->experience += 1000;
+
 	gi.sound (self, CHAN_VOICE, sound_death, 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_NO;
@@ -706,7 +708,7 @@ void SP_monster_jorg (edict_t *self)
 	VectorSet (self->mins, -80, -80, 0);
 	VectorSet (self->maxs, 80, 80, 140);
 
-	self->health = 3000;
+	self->health = 5000;
 	self->gib_health = -2000;
 	self->mass = 1000;
 
