@@ -1839,8 +1839,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
-	int mod;
-
+	int mod, rng;
 
 	if (level.time - ent->client->attritionTime > 5)
 	{
@@ -1859,14 +1858,14 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 	}
 
-	if (ApplyRegenHealth = 1)
+	if (ApplyRegenHealth == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
 
 		if (buffed == 1)
 		{
-			if (level.time - time0 < 30)
+			if (level.time - time0 < 100)
 			{
 				if (buffCount % 6 == 0 && ent->health != ent->max_health)
 					ent->health += 1;
@@ -1879,19 +1878,19 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}
 	}
-	if (ApplyPoison = 1)
+	if (ApplyPoison == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
 
 		if (buffed == 1)
 		{
-			if (level.time - time0 < 30)
+			if (level.time - time0 < 200)
 			{	
 				if (ent->health > 0)
 				{
-					if (cnt % 6 == 0)
-						ent->health -= 1;
+					if (cnt % 10 == 0)
+						ent->health -= 10;
 					buffCount += 1;
 				}
 				if (ent->health <= 0)
@@ -1904,7 +1903,30 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-	if (ApplySpeedBoostOrReduce = 1)
+	if (ApplySpeedBoostOrReduce == 1)
+	{
+		if (buffed == 0)
+			buffed = 1;
+		//Choose boost/reduce randomly
+		if (buffed == 1)
+		{
+			rng = rand() % 2;
+			if (level.time - time0 < 200)
+			{
+				if(rng == 1)
+					ent->gravity = 2.0;
+				if(rng == 2)
+					ent->gravity = 0.5;
+				buffCount += 1;
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+			}
+		}	
+	}
+	/*if (ApplyIncreaseOrDecreaseDamage == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
@@ -1922,25 +1944,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-	if (ApplyIncreaseOrDecreaseDamage = 1)
-	{
-		if (buffed == 0)
-			buffed = 1;
-		//Choose boost/reduce randomly
-		if (buffed == 1)
-		{
-			if (level.time - time0 < 30)
-			{
-				buffCount += 1;
-			}
-			else
-			{
-				buffCount = 0;
-				buffed = 0;
-			}
-		}	
-	}
-	if (ApplyImmortality = 1)
+	if (ApplyImmortality == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
@@ -1959,7 +1963,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}	
 	}
 
-	if (ApplyEnemyRegenHealth = 1)
+	if (ApplyEnemyRegenHealth == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
@@ -1977,7 +1981,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-	if (ApplyEnemyPoison = 1)
+	if (ApplyEnemyPoison == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
@@ -1995,7 +1999,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-    if (ApplyEnemySpeedBoostOrReduce = 1)
+    if (ApplyEnemySpeedBoostOrReduce == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
@@ -2013,7 +2017,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-	if (ApplyEnemyIncreaseOrDecreaseDamage = 1)
+	if (ApplyEnemyIncreaseOrDecreaseDamage == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
@@ -2031,7 +2035,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-	if (ApplyEnemyImmortality = 1)
+	if (ApplyEnemyImmortality == 1)
 	{
 		if (buffed == 0)
 			buffed = 1;
@@ -2049,7 +2053,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}
 	}
-
+	*/
 	level.current_entity = ent;
 	client = ent->client;
 
