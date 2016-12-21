@@ -506,7 +506,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	trace_t	tr;
 	int mod;
 
-	if(!mon)
+	if(mon == false)
 	{
 		if (initCall == 1)
 			self->client->prevTime = self->client->fireTime;
@@ -521,14 +521,14 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 			}
 
 			return;
-		}
+		}	
+
+		self->client->attritionTime = level.time;
+		randomEffect(self);
+		initCall = 0;
+
+		self->client->prevTime = self->client->fireTime;
 	}
-
-	self->client->attritionTime = level.time;
-	randomEffect(self);
-	initCall = 0;
-
-	self->client->prevTime = self->client->fireTime;
 
 	VectorNormalize (dir);
 
@@ -838,7 +838,7 @@ void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed
 fire_rail
 =================
 */
-void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick)
+void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, qboolean mon)
 {
 	vec3_t		from;
 	vec3_t		end;
@@ -847,9 +847,11 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	int			mask;
 	qboolean	water;
 
- 	self->client->attritionTime = level.time;
-
-	randomEffect(self);
+	if (mon == false)
+	{
+ 		self->client->attritionTime = level.time;
+		randomEffect(self);
+	}
 
 	VectorMA (start, 8192, aimdir, end);
 	VectorCopy (start, from);

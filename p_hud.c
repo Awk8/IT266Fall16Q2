@@ -457,7 +457,7 @@ void G_SetStats (edict_t *ent)
 	if (ent->client->playerLevel != 0)
 	{
 		ent->client->ps.stats[STAT_LEVEL_ICON] = gi.imageindex ("p_rebreather");
-		ent->client->ps.stats[STAT_LEVEL] = 1;//ent->client->playerLevel;
+		ent->client->ps.stats[STAT_LEVEL] = ent->client->playerLevel;
 	}
 	else
 	{

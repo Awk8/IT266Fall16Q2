@@ -10,53 +10,101 @@ int mam = 0;
 int spd = 0;
 int imm = 0;
 int pass = 0;
+int xp = 0;
+
+int lvl1 = 0;
+int lvl2 = 0;
+int lvl3 = 0;
+int lvl4 = 0;
+int lvl5 = 0;
+int lvl6 = 0;
+int lvl7 = 0;
+int lvl8 = 0;
 
 int buffCount = 0;
 
 static void pLevel (edict_t *self)
 {
-	self->client->playerLevel = 1;
-
-	switch (self->client->experience)
+	xp = self->client->experience;
+	if ( xp < 500)
 	{
-		case 500 :
-			self->client->playerLevel = 2;
-			self->max_health = 150; //->client?
-			self->health = 150;
-			break;
-		case 1200 :
-			self->client->playerLevel = 3;
-			self->max_health = 200;
-			self->health = 200;
-			break;
-		case 2100 :
-			self->client->playerLevel = 4;
-			self->max_health = 250;
-			self->health = 250;
-			break;
-		case 3200 :
-			self->client->playerLevel = 5;
-			self->max_health = 300;
-			self->health = 300;
-			break;
-		case 4500 :
-			self->client->playerLevel = 6;
-			self->max_health = 350;
-			self->health = 350;
-			break;
-		case 6000 :
-			self->client->playerLevel = 7;
-			self->max_health = 400;
-			self->health = 400;
-			break;
-		case 7700 :
-			self->client->playerLevel = 8;
-			self->max_health = 500;
-			self->health = 500;
-			break;
-		default :
+		if(lvl1 == 0)
+		{
 			self->client->playerLevel = 1;
-			break;
+			self->client->pers.max_health = 100;
+			self->client->pers.health = 100;
+			lvl1 = 1;
+		}
+	}
+	if( xp >= 500 && xp < 1200)
+	{
+		if(lvl2 == 0)
+		{
+			self->client->playerLevel = 2;
+			self->client->pers.max_health = 150;
+			self->client->pers.health = 150;
+			lvl2 = 1;
+		}
+	}
+	if( xp >= 1200 && xp < 2100)
+	{
+		if(lvl3 == 0)
+		{
+			self->client->playerLevel = 3;
+			self->client->pers.max_health = 200;
+			self->client->pers.health = 200;
+			lvl3 = 1;
+		}
+	}
+	if( xp >= 2100 && xp < 3200)
+	{
+		if(lvl4 == 0)
+		{
+			self->client->playerLevel = 4;
+			self->client->pers.max_health = 250;
+			self->client->pers.health = 250;
+			lvl4 = 1;
+		}
+	}
+	if( xp >= 3200 && xp < 4500)
+	{
+		if(lvl5 == 0)
+		{
+			self->client->playerLevel = 5;
+			self->client->pers.max_health = 300;
+			self->client->pers.health = 300;
+			lvl5 = 1;
+		}
+	}
+	if( xp >= 4500 && xp < 6000)
+	{
+		if(lvl6 == 0)
+		{
+			self->client->playerLevel = 6;
+			self->client->pers.max_health = 350;
+			self->client->pers.health = 350;
+			lvl6 = 1;
+		}
+	}
+	if( xp >= 6000 && xp < 7700)
+	{
+		if(lvl7 == 0)
+		{
+			self->client->playerLevel = 7;
+			self->client->pers.max_health = 400;
+			self->client->pers.health = 400;
+			lvl7 = 1;
+		}
+	}
+	if( xp > 7700)
+	{
+		if(lvl8 == 0)
+		{
+			self->client->playerLevel = 8;
+			self->client->pers.max_health = 500;
+			self->client->pers.health = 500;
+			lvl8 = 1;
+		}
 	}
 }
 
@@ -682,13 +730,13 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.selected_item = ITEM_INDEX(item2);
 	client->pers.inventory[client->pers.selected_item] = 1;
 	client->pers.selected_item = ITEM_INDEX(item3);
-	client->pers.inventory[client->pers.selected_item] = 30;
+	client->pers.inventory[client->pers.selected_item] = 100;
 
 	client->pers.weapon = item;
 	client->pers.weapon = item2;
 
-	client->pers.health			= 200;
-	client->pers.max_health		= 200;
+	client->pers.health			= 100;
+	client->pers.max_health		= 100;
 
 	client->pers.max_bullets	= 0;
 	client->pers.max_shells		= 0;
@@ -1659,9 +1707,9 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	pmove_t	pm;
 	int mod, rng;
 
-	if (!ent->client->playerLevel)
+	if (ent->client->playerLevel == 0)
 		ent->client->playerLevel = 1;
-	if(!ent->client->attritionTime)
+	if(ent->client->attritionTime == 0)
 		ent->client->attritionTime = level.time;
 
 	pLevel(ent);
@@ -1751,7 +1799,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				if ( pass == 0 )
 				{
 					ent->client->pers.selected_item = ITEM_INDEX(item);
-					ent->client->pers.inventory[ent->client->pers.selected_item] = 30;
+					ent->client->pers.inventory[ent->client->pers.selected_item] = 100;
 					pass = 1;
 				}
 			}
