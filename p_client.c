@@ -7,9 +7,10 @@ int cnt = 0;
 int buffed = 0;
 int reg = 0;
 int psn = 0;
-int dmg = 0;
+int mam = 0;
 int spd = 0;
 int imm = 0;
+int pass = 0;
 
 int buffCount = 0;
 int currBuffed = 0;
@@ -21,7 +22,7 @@ int time0 = 0;
 
 int ApplyRegenHealth = 0;//Health Regen
 int ApplyPoison = 0;//Poison
-int ApplySpeedBoostOrReduce = 0;//Speed
+int MaxAmmo = 0;//Speed
 int ApplyIncreaseOrDecreaseDamage = 0;//Damage Increase
 int ApplyImmortality = 0;//Immortality
 
@@ -52,7 +53,7 @@ static void randomEffect (edict_t *self)
 
 	choose = rand() % 10;
 
-	if (randomList[choose] != NULL)
+	if (randomList[choose] != 0)
 		randomInt = randomList[choose];
 	else
 		randomInt = randomList[7];
@@ -82,7 +83,7 @@ static void randomEffect (edict_t *self)
 				//Call effect Hud Message
 				break;
 			case 3 :
-				ApplySpeedBoostOrReduce = 1;
+				MaxAmmo = 1;
 				self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
@@ -147,7 +148,7 @@ static int buffOrDebuff (int chanceOfBuff)
 
 	choose = rand() % 10;
 
-	if (randomList[choose] != NULL)
+	if (randomList[choose] != 0)
 		randomInt = randomList[choose];
 	else
 		randomInt = randomList[4];
@@ -1840,6 +1841,7 @@ usually be a couple times for each server frame.
 void ClientThink (edict_t *ent, usercmd_t *ucmd)
 {
 	gclient_t	*client;
+	gitem_t		*item;
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
@@ -1879,6 +1881,9 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				if (buffCount % 6 == 0 && ent->health != ent->max_health)
 					ent->health += 1;
 				buffCount += 1;
+
+				if (buffCount >= 500)
+					buffCount = 0;
 			}
 			else
 			{
@@ -1903,6 +1908,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 					if (cnt % 20 == 0)
 						ent->health -= 1;
 					buffCount += 1;
+					if (buffCount >= 500)
+					buffCount = 0;
 				}
 				if (ent->health <= 0)
 					player_die(ent, ent, ent, 5, ent->move_origin);
@@ -1916,16 +1923,43 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-	if (ApplySpeedBoostOrReduce == 0)
+	if (MaxAmmo == 0)
 	{
-		if (buffed == 0 || spd == 1)
+		if (buffed == 0 || mam == 1)
+		{
+			buffed = 1;
+			mam = 1;
+
+			item = FindItem("Slugs");
+
+			if (level.time - time0 < 5)
+			{
+				if ( pass == 0 )
+				{
+					ent->client->pers.selected_item = ITEM_INDEX(item);
+					ent->client->pers.inventory[ent->client->pers.selected_item] = 30;
+					pass = 1;
+				}
+			}
+			else
+			{
+				buffCount = 0;
+				buffed = 0;
+				MaxAmmo = 0;
+				mam = 0;
+				pass = 0;
+			}
+		}	
+	}
+	/*if (ApplyIncreaseOrDecreaseDamage == 1)
+	{
+		if (buffed == 0 || psn == 1)
 		{
 			buffed = 1;
 			spd = 1;
 
-			//Choose boost/reduce randomly
 			rng = rand() % 2;
-			if (level.time - time0 < 200)
+			if (level.time - time0 < 500)
 			{
 				if(rng == 1)
 					ent->speed = 100;
@@ -1937,46 +1971,30 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			{
 				buffCount = 0;
 				buffed = 0;
-				ApplySpeedBoostOrReduce = 0;
+				ApplyIncreaseOrDecreaseDamage = 0;
 				spd = 0;
-			}
-		}	
-	}
-	/*if (ApplyIncreaseOrDecreaseDamage == 1)
-	{
-		if (buffed == 0)
-			buffed = 1;
-		//Choose boost/reduce randomly
-		if (buffed == 1)
-		{
-			if (level.time - time0 < 30)
-			{
-				buffCount += 1;
-			}
-			else
-			{
-				buffCount = 0;
-				buffed = 0;
 			}
 		}	
 	}
 	if (ApplyImmortality == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
-
-		if (buffed == 1)
+		if (buffed == 0 || psn == 1)
 		{
-			if (level.time - time0 < 30)
-			{
-				buffCount += 1;
+			buffed = 1;
+			imm = 1;
+
+			if (level.time - time0 < 500)
+			{	
+				
 			}
 			else
 			{
 				buffCount = 0;
 				buffed = 0;
+				ApplyImmortality = 0;
+				imm = 0;
 			}
-		}	
+		}		
 	}
 
 	if (ApplyEnemyRegenHealth == 1)
@@ -2068,8 +2086,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				buffed = 0;
 			}
 		}
-	}
-	*/
+	}*/
+	
 	level.current_entity = ent;
 	client = ent->client;
 
