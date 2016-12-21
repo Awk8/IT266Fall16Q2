@@ -32,7 +32,7 @@ void monster_fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damag
 void monster_fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int flashtype, int effect)
 {
 	//float fireTime = level.time; 
-	fire_blaster (self, start, dir, damage, speed, effect, false);//, fireTime);
+	fire_blaster (self, start, dir, damage, speed, effect, false, true);//, fireTime);
 
 	gi.WriteByte (svc_muzzleflash2);
 	gi.WriteShort (self - g_edicts);

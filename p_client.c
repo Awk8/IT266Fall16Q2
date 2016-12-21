@@ -1679,7 +1679,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			mod = MOD_ATTRITION;
 			cnt = 0;
 			ent->client->attritionTime = level.time;
-			player_die(ent, ent, ent, 5, ent->move_origin);
+			player_die(ent, ent, ent, 100000, vec3_origin);
 		}
 	}
 

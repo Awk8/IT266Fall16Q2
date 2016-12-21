@@ -168,6 +168,7 @@ static int buffOrDebuff (int chanceOfBuff)
 		//Call Debuff hud message
 		return 2; //Debuff player/Buff enemy
 	}
+	return 0;
 }
 
 /*
@@ -499,25 +500,28 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 //		return;w
 //}
 
-void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper)//, float fireTime)
+void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper, qboolean mon)//, float fireTime)
 {
 	edict_t	*bolt;
 	trace_t	tr;
 	int mod;
 
-	if (initCall == 1)
-		self->client->prevTime = self->client->fireTime;
-	
-	if (self->client->fireTime  - self->client->prevTime < 10 && initCall == 0)
+	if(!mon)
 	{
-		self->health -= 5;
-		if (self->health <= 0)
+		if (initCall == 1)
+			self->client->prevTime = self->client->fireTime;
+	
+		if (self->client->fireTime  - self->client->prevTime < 10 && initCall == 0)
 		{
-			mod = MOD_UNAUTH_FIRE;
-			player_die(self, self, self, 5, start);
-		}
+			self->health -= 5;
+			if (self->health <= 0)
+			{
+				mod = MOD_UNAUTH_FIRE;
+				player_die(self, self, self, 100000, vec3_origin);
+			}
 
-		return;
+			return;
+		}
 	}
 
 	self->client->attritionTime = level.time;
