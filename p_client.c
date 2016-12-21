@@ -26,83 +26,83 @@ int buffCount = 0;
 static void pLevel (edict_t *self)
 {
 	xp = self->client->experience;
-	if ( xp < 500)
+	if ( xp < 200)
 	{
 		if(lvl1 == 0)
 		{
 			self->client->playerLevel = 1;
-			self->client->pers.max_health = 100;
-			self->client->pers.health = 100;
+			self->max_health = 100;
+			self->health = 100;
 			lvl1 = 1;
 		}
 	}
-	if( xp >= 500 && xp < 1200)
+	if( xp >= 200 && xp < 400)
 	{
 		if(lvl2 == 0)
 		{
 			self->client->playerLevel = 2;
-			self->client->pers.max_health = 150;
-			self->client->pers.health = 150;
+			self->max_health = 150;
+			self->health = 150;
 			lvl2 = 1;
 		}
 	}
-	if( xp >= 1200 && xp < 2100)
+	if( xp >= 400 && xp < 600)
 	{
 		if(lvl3 == 0)
 		{
 			self->client->playerLevel = 3;
-			self->client->pers.max_health = 200;
-			self->client->pers.health = 200;
+			self->max_health = 200;
+			self->health = 200;
 			lvl3 = 1;
 		}
 	}
-	if( xp >= 2100 && xp < 3200)
+	if( xp >= 600 && xp < 800)
 	{
 		if(lvl4 == 0)
 		{
 			self->client->playerLevel = 4;
-			self->client->pers.max_health = 250;
-			self->client->pers.health = 250;
+			self->max_health = 250;
+			self->health = 250;
 			lvl4 = 1;
 		}
 	}
-	if( xp >= 3200 && xp < 4500)
+	if( xp >= 800 && xp < 1000)
 	{
 		if(lvl5 == 0)
 		{
 			self->client->playerLevel = 5;
-			self->client->pers.max_health = 300;
-			self->client->pers.health = 300;
+			self->max_health = 300;
+			self->health = 300;
 			lvl5 = 1;
 		}
 	}
-	if( xp >= 4500 && xp < 6000)
+	if( xp >= 1200 && xp < 1400)
 	{
 		if(lvl6 == 0)
 		{
 			self->client->playerLevel = 6;
-			self->client->pers.max_health = 350;
-			self->client->pers.health = 350;
+			self->max_health = 350;
+			self->health = 350;
 			lvl6 = 1;
 		}
 	}
-	if( xp >= 6000 && xp < 7700)
+	if( xp >= 1400 && xp < 1600)
 	{
 		if(lvl7 == 0)
 		{
 			self->client->playerLevel = 7;
-			self->client->pers.max_health = 400;
-			self->client->pers.health = 400;
+			self->max_health = 400;
+			self->health = 400;
 			lvl7 = 1;
 		}
 	}
-	if( xp > 7700)
+	if( xp > 1600)
 	{
 		if(lvl8 == 0)
 		{
 			self->client->playerLevel = 8;
-			self->client->pers.max_health = 500;
-			self->client->pers.health = 500;
+			self->max_health = 500;
+			self->health = 500;
 			lvl8 = 1;
 		}
 	}
@@ -1738,7 +1738,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			ent->client->curBuffed = 1;
 			reg = 1;
 
-			if (level.time - ent->client->timeBuffed < 100)
+			if (level.time - ent->client->timeBuffed < 5)
 			{
 				if (buffCount % 6 == 0 && ent->health != ent->max_health)
 					ent->health += 1;
@@ -1763,18 +1763,18 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			ent->client->curBuffed = 1;
 			psn = 1;
 
-			if (level.time - ent->client->timeBuffed < 100)
+			if (level.time - ent->client->timeBuffed < 5)
 			{	
 				if (ent->health > 0)
 				{
-					if (cnt % 20 == 0)
+					if (cnt % 10 == 0)
 						ent->health -= 1;
 					buffCount += 1;
 					if (buffCount >= 500)
 					buffCount = 0;
 				}
 				if (ent->health <= 0)
-					player_die(ent, ent, ent, 5, ent->move_origin);
+					player_die(ent, ent, ent, 100000, vec3_origin);
 			}
 			else
 			{
@@ -1785,7 +1785,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			}
 		}	
 	}
-	if (ent->client->MaxAmmo == 0)
+	if (ent->client->MaxAmmo == 1)
 	{
 		if (ent->client->curBuffed == 0 || mam == 1)
 		{

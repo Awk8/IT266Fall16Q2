@@ -8,63 +8,63 @@ int initCall = 1;
 static void randomEffect (edict_t *self)
 {
 	int randomInt, i, choose, buffChance, buffDeBuff, tmpTime;
-	int randomList[10];
+	//int randomList[10];
 
-	buffChance = chanceOfBuff(self);
-	buffDeBuff = buffOrDebuff(buffChance);
+	//buffChance = chanceOfBuff(self);
+	//buffDeBuff = buffOrDebuff(buffChance);
 
 	if (self->client->playerLevel == 1)
 		return; //No effect
 
 	srand(time(0));
-	for (i = 0; i < 10; i++)
-		randomList[i] = rand() % 5;
+	//for (i = 0; i < 10; i++)
+		//randomList[i] = rand() % 5;
 
-	choose = rand() % 10;
+	choose = rand() % 4;
 
-	if (randomList[choose] != 0)
-		randomInt = randomList[choose];
-	else
-		randomInt = randomList[7];
+	//if (randomList[choose] != 0)
+		//randomInt = randomList[choose];
+	//else
+		//randomInt = randomList[7];
 
 	if (self->client->curBuffed == 1)
 		return;
 
 	self->client->timeBuffed = level.time;
 
-	if (buffDeBuff == 1)
-	{
-		switch(randomInt)
+	//if (buffDeBuff == 1)
+	//{
+		switch(choose)
 		{
-			case 0 :
+			case 1 :
 				self->client->ApplyRegenHealth = 1;
 				//self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
-			case 1 :
+			case 2 :
 				self->client->ApplyPoison = 1;
 				//self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
-			case 2 :
-				self->client->ApplyIncreaseOrDecreaseDamage = 1;
-				//self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
+			//case 2 :
+			//	self->client->ApplyIncreaseOrDecreaseDamage = 1;
+			//	//self->client->buff_framenum = level.framenum + 300;
+			//	//Call effect Hud Message
+			//	break;
 			case 3 :
 				self->client->MaxAmmo = 1;
 				//self->client->buff_framenum = level.framenum + 300;
 				//Call effect Hud Message
 				break;
-			case 4 :
-				self->client->ApplyImmortality = 1;
-				//self->client->buff_framenum = level.framenum + 100;
-				//Call effect Hud Message
-				break;
+			//case 4 :
+			//	self->client->ApplyImmortality = 1;
+			//	//self->client->buff_framenum = level.framenum + 100;
+			//	//Call effect Hud Message
+			//	break;
 			default:
 				break;
 		}
-	}
+	//}
 	//else if (buffDeBuff == 2)
 	//{
 	//	switch(randomInt)
@@ -98,8 +98,8 @@ static void randomEffect (edict_t *self)
 	//			break;
 	//	}
 	//}
-	else
-		return;
+	//else
+	//	return;
 	return;
 }
 
