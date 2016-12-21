@@ -4,7 +4,6 @@
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 int cnt = 0;
-int buffed = 0;
 int reg = 0;
 int psn = 0;
 int mam = 0;
@@ -13,157 +12,6 @@ int imm = 0;
 int pass = 0;
 
 int buffCount = 0;
-int currBuffed = 0;
-int time0 = 0;
-
-///
-/// Player Buffs:
-///
-
-int ApplyRegenHealth = 0;//Health Regen
-int ApplyPoison = 0;//Poison
-int MaxAmmo = 0;//Speed
-int ApplyIncreaseOrDecreaseDamage = 0;//Damage Increase
-int ApplyImmortality = 0;//Immortality
-
-///
-///Enemy Buffs:
-///
-
-int ApplyEnemyRegenHealth = 0;//Health Regen
-int ApplyEnemyPoison = 0;//Poison
-int ApplyEnemySpeedBoostOrReduce = 0;//Speed
-int ApplyEnemyIncreaseOrDecreaseDamage = 0;//Damage Increase
-int ApplyEnemyImmortality = 0;//Immortality
-
-static void randomEffect (edict_t *self)
-{
-	int randomInt, i, choose, buffChance, buffDeBuff, tmpTime;
-	int randomList[10];
-
-	buffChance = chanceOfBuff(self);
-	buffDeBuff = buffOrDebuff(buffChance);
-
-	if (self->client->playerLevel == 1)
-		return; //No effect
-
-	srand(time(0));
-	for (i = 0; i < 10; i++)
-		randomList[i] = rand() % 5;
-
-	choose = rand() % 10;
-
-	if (randomList[choose] != 0)
-		randomInt = randomList[choose];
-	else
-		randomInt = randomList[7];
-
-	if (currBuffed == 1)
-		return;
-
-	time0 = level.time;
-
-	if (buffDeBuff == 1)
-	{
-		switch(randomInt)
-		{
-			case 0 :
-				ApplyRegenHealth = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 1 :
-				ApplyPoison = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 2 :
-				ApplyIncreaseOrDecreaseDamage = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 3 :
-				MaxAmmo = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 4 :
-				ApplyImmortality = 1;
-				self->client->buff_framenum = level.framenum + 100;
-				//Call effect Hud Message
-				break;
-			default:
-				break;
-		}
-	}
-	else if (buffDeBuff == 2)
-	{
-		switch(randomInt)
-		{
-			case 0 :
-				ApplyEnemyRegenHealth = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 1 :
-				ApplyEnemyPoison = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 2 :
-				ApplyEnemyIncreaseOrDecreaseDamage = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 3 :
-				ApplyEnemySpeedBoostOrReduce = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			case 4 :
-				ApplyEnemyImmortality = 1;
-				self->client->buff_framenum = level.framenum + 300;
-				//Call effect Hud Message
-				break;
-			default:
-				break;
-		}
-	}
-	else
-		return;
-	return;
-}
-
-static int buffOrDebuff (int chanceOfBuff)
-{
-	int randomInt, i, choose;
-	int randomList[10];
-
-	if (chanceOfBuff == 0)
-		return 0; //Level 1 player has no chance of effects
-
-	srand(time(0));
-	for (i = 0; i < 10; i++)
-		randomList[i] = rand() % 100;
-
-	choose = rand() % 10;
-
-	if (randomList[choose] != 0)
-		randomInt = randomList[choose];
-	else
-		randomInt = randomList[4];
-
-	if (randomInt < chanceOfBuff)
-	{
-		//Call Buff hud message
-		return 1; //Buff player/Debuff enemy
-	}
-	if (randomInt > chanceOfBuff)
-	{
-		//Call Debuff hud message
-		return 2; //Debuff player/Buff enemy
-	}
-}
 
 static void pLevel (edict_t *self)
 {
@@ -210,42 +58,6 @@ static void pLevel (edict_t *self)
 			self->client->playerLevel = 1;
 			break;
 	}
-}
-
-static int chanceOfBuff (edict_t *self)
-{
-	int chanceOfBuff = 0;
-
-	switch (self->client->playerLevel)
-	{
-		case 2 :
-			chanceOfBuff = 40;
-			break;
-		case 3 :
-			chanceOfBuff = 50;
-			break;
-		case 4 :
-			chanceOfBuff = 60;
-			break;
-		case 5 :
-			chanceOfBuff = 70;
-			break;
-		case 6 :
-			chanceOfBuff = 80;
-			break;
-		case 7 :
-			chanceOfBuff = 90;
-			break;
-		case 8 :
-			chanceOfBuff = 100;
-			break;
-
-		default :
-			chanceOfBuff = 0;
-			break;
-	}
-
-	return chanceOfBuff;
 }
 
 void SP_misc_teleporter_dest (edict_t *ent);
@@ -1852,6 +1664,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	if(!ent->client->attritionTime)
 		ent->client->attritionTime = level.time;
 
+	pLevel(ent);
+
 	if (level.time - ent->client->attritionTime > 5)
 	{
 		if (ent->health > 0)
@@ -1869,14 +1683,14 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 	}
 
-	if (ApplyRegenHealth == 1)
+	if (ent->client->ApplyRegenHealth == 1)
 	{
-		if (buffed == 0 || reg == 1)
+		if (ent->client->curBuffed == 0 || reg == 1)
 		{
-			buffed = 1;
+			ent->client->curBuffed = 1;
 			reg = 1;
 
-			if (level.time - time0 < 100)
+			if (level.time - ent->client->timeBuffed < 100)
 			{
 				if (buffCount % 6 == 0 && ent->health != ent->max_health)
 					ent->health += 1;
@@ -1888,20 +1702,20 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
-				ApplyRegenHealth = 0;
+				ent->client->curBuffed = 0;
+				ent->client->ApplyRegenHealth = 0;
 				reg = 0;
 			}
 		}
 	}
-	if (ApplyPoison == 1)
+	if (ent->client->ApplyPoison == 1)
 	{
-		if (buffed == 0 || psn == 1)
+		if (ent->client->curBuffed == 0 || psn == 1)
 		{
-			buffed = 1;
+			ent->client->curBuffed = 1;
 			psn = 1;
 
-			if (level.time - time0 < 100)
+			if (level.time - ent->client->timeBuffed < 100)
 			{	
 				if (ent->health > 0)
 				{
@@ -1917,22 +1731,22 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
-				ApplyPoison = 0;
+				ent->client->curBuffed = 0;
+				ent->client->ApplyPoison = 0;
 				psn = 0;
 			}
 		}	
 	}
-	if (MaxAmmo == 0)
+	if (ent->client->MaxAmmo == 0)
 	{
-		if (buffed == 0 || mam == 1)
+		if (ent->client->curBuffed == 0 || mam == 1)
 		{
-			buffed = 1;
+			ent->client->curBuffed = 1;
 			mam = 1;
 
 			item = FindItem("Slugs");
 
-			if (level.time - time0 < 5)
+			if (level.time - ent->client->timeBuffed < 5)
 			{
 				if ( pass == 0 )
 				{
@@ -1944,8 +1758,8 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
-				MaxAmmo = 0;
+				ent->client->curBuffed = 0;
+				ent->client->MaxAmmo = 0;
 				mam = 0;
 				pass = 0;
 			}
@@ -1953,13 +1767,13 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	}
 	/*if (ApplyIncreaseOrDecreaseDamage == 1)
 	{
-		if (buffed == 0 || psn == 1)
+		if (ent->client->curBuffed == 0 || psn == 1)
 		{
-			buffed = 1;
+			ent->client->curBuffed = 1;
 			spd = 1;
 
 			rng = rand() % 2;
-			if (level.time - time0 < 500)
+			if (level.time - ent->client->timeBuffed < 500)
 			{
 				if(rng == 1)
 					ent->speed = 100;
@@ -1970,7 +1784,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
+				ent->client->curBuffed = 0;
 				ApplyIncreaseOrDecreaseDamage = 0;
 				spd = 0;
 			}
@@ -1978,19 +1792,19 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	}
 	if (ApplyImmortality == 1)
 	{
-		if (buffed == 0 || psn == 1)
+		if (ent->client->curBuffed == 0 || psn == 1)
 		{
-			buffed = 1;
+			ent->client->curBuffed = 1;
 			imm = 1;
 
-			if (level.time - time0 < 500)
+			if (level.time - ent->client->timeBuffed < 500)
 			{	
 				
 			}
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
+				ent->client->curBuffed = 0;
 				ApplyImmortality = 0;
 				imm = 0;
 			}
@@ -1999,91 +1813,91 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	if (ApplyEnemyRegenHealth == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
+		if (ent->client->curBuffed == 0)
+			ent->client->curBuffed = 1;
 
-		if (buffed == 1)
+		if (ent->client->curBuffed == 1)
 		{
-			if (level.time - time0 < 30)
+			if (level.time - ent->client->timeBuffed < 30)
 			{
 				buffCount += 1;
 			}
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
+				ent->client->curBuffed = 0;
 			}
 		}	
 	}
 	if (ApplyEnemyPoison == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
+		if (ent->client->curBuffed == 0)
+			ent->client->curBuffed = 1;
 
-		if (buffed == 1)
+		if (ent->client->curBuffed == 1)
 		{
-			if (level.time - time0 < 30)
+			if (level.time - ent->client->timeBuffed < 30)
 			{
 				buffCount += 1;
 			}
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
+				ent->client->curBuffed = 0;
 			}
 		}	
 	}
     if (ApplyEnemySpeedBoostOrReduce == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
+		if (ent->client->curBuffed == 0)
+			ent->client->curBuffed = 1;
 
-		if (buffed == 1)
+		if (ent->client->curBuffed == 1)
 		{
-			if (level.time - time0 < 30)
+			if (level.time - ent->client->timeBuffed < 30)
 			{
 				buffCount += 1;
 			}
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
+				ent->client->curBuffed = 0;
 			}
 		}	
 	}
 	if (ApplyEnemyIncreaseOrDecreaseDamage == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
+		if (ent->client->curBuffed == 0)
+			ent->client->curBuffed = 1;
 
-		if (buffed == 1)
+		if (ent->client->curBuffed == 1)
 		{
-			if (level.time - time0 < 30)
+			if (level.time - ent->client->timeBuffed < 30)
 			{
 				buffCount += 1;
 			}
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
+				ent->client->curBuffed = 0;
 			}
 		}	
 	}
 	if (ApplyEnemyImmortality == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
+		if (ent->client->curBuffed == 0)
+			ent->client->curBuffed = 1;
 
-		if (buffed == 1)
+		if (ent->client->curBuffed == 1)
 		{
-			if (level.time - time0 < 30)
+			if (level.time - ent->client->timeBuffed < 30)
 			{
 				buffCount += 1;
 			}
 			else
 			{
 				buffCount = 0;
-				buffed = 0;
+				ent->client->curBuffed = 0;
 			}
 		}
 	}*/

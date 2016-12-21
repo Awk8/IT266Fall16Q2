@@ -2,10 +2,173 @@
 
 //void blaster_think (edict_t *self);
 
-float prevFire;
 int initCall = 1;
-int experience = 0;
 //int attritionTime = 0;
+
+static void randomEffect (edict_t *self)
+{
+	int randomInt, i, choose, buffChance, buffDeBuff, tmpTime;
+	int randomList[10];
+
+	buffChance = chanceOfBuff(self);
+	buffDeBuff = buffOrDebuff(buffChance);
+
+	if (self->client->playerLevel == 1)
+		return; //No effect
+
+	srand(time(0));
+	for (i = 0; i < 10; i++)
+		randomList[i] = rand() % 5;
+
+	choose = rand() % 10;
+
+	if (randomList[choose] != 0)
+		randomInt = randomList[choose];
+	else
+		randomInt = randomList[7];
+
+	if (self->client->curBuffed == 1)
+		return;
+
+	self->client->timeBuffed = level.time;
+
+	if (buffDeBuff == 1)
+	{
+		switch(randomInt)
+		{
+			case 0 :
+				self->client->ApplyRegenHealth = 1;
+				//self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 1 :
+				self->client->ApplyPoison = 1;
+				//self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 2 :
+				self->client->ApplyIncreaseOrDecreaseDamage = 1;
+				//self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 3 :
+				self->client->MaxAmmo = 1;
+				//self->client->buff_framenum = level.framenum + 300;
+				//Call effect Hud Message
+				break;
+			case 4 :
+				self->client->ApplyImmortality = 1;
+				//self->client->buff_framenum = level.framenum + 100;
+				//Call effect Hud Message
+				break;
+			default:
+				break;
+		}
+	}
+	//else if (buffDeBuff == 2)
+	//{
+	//	switch(randomInt)
+	//	{
+	//		case 0 :
+	//			//ApplyEnemyRegenHealth = 1;
+	//			self->client->buff_framenum = level.framenum + 300;
+	//			//Call effect Hud Message
+	//			break;
+	//		case 1 :
+	//			//ApplyEnemyPoison = 1;
+	//			self->client->buff_framenum = level.framenum + 300;
+	//			//Call effect Hud Message
+	//			break;
+	//		case 2 :
+	//			//ApplyEnemyIncreaseOrDecreaseDamage = 1;
+	//			self->client->buff_framenum = level.framenum + 300;
+	//			//Call effect Hud Message
+	//			break;
+	//		case 3 :
+	//			//ApplyEnemySpeedBoostOrReduce = 1;
+	//			self->client->buff_framenum = level.framenum + 300;
+	//			//Call effect Hud Message
+	//			break;
+	//		case 4 :
+	//			//ApplyEnemyImmortality = 1;
+	//			self->client->buff_framenum = level.framenum + 300;
+	//			//Call effect Hud Message
+	//			break;
+	//		default:
+	//			break;
+	//	}
+	//}
+	else
+		return;
+	return;
+}
+
+static int chanceOfBuff (edict_t *self)
+{
+	int chanceOfBuff = 0;
+
+	switch (self->client->playerLevel)
+	{
+		case 2 :
+			chanceOfBuff = 40;
+			break;
+		case 3 :
+			chanceOfBuff = 50;
+			break;
+		case 4 :
+			chanceOfBuff = 60;
+			break;
+		case 5 :
+			chanceOfBuff = 70;
+			break;
+		case 6 :
+			chanceOfBuff = 80;
+			break;
+		case 7 :
+			chanceOfBuff = 90;
+			break;
+		case 8 :
+			chanceOfBuff = 100;
+			break;
+
+		default :
+			chanceOfBuff = 0;
+			break;
+	}
+
+	return chanceOfBuff;
+}
+
+static int buffOrDebuff (int chanceOfBuff)
+{
+	int randomInt, i, choose;
+	int randomList[10];
+
+	if (chanceOfBuff == 0)
+		return 0; //Level 1 player has no chance of effects
+
+	srand(time(0));
+	for (i = 0; i < 10; i++)
+		randomList[i] = rand() % 100;
+
+	choose = rand() % 10;
+
+	if (randomList[choose] != 0)
+		randomInt = randomList[choose];
+	else
+		randomInt = randomList[4];
+
+	if (randomInt < chanceOfBuff)
+	{
+		//Call Buff hud message
+		return 1; //Buff player/Debuff enemy
+	}
+	if (randomInt > chanceOfBuff)
+	{
+		//Call Debuff hud message
+		return 2; //Debuff player/Buff enemy
+	}
+}
 
 /*
 =================
@@ -358,9 +521,10 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	}
 
 	self->client->attritionTime = level.time;
+	randomEffect(self);
 	initCall = 0;
 
-	prevFire = self->client->fireTime;
+	self->client->prevTime = self->client->fireTime;
 
 	VectorNormalize (dir);
 
@@ -680,6 +844,8 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 	qboolean	water;
 
  	self->client->attritionTime = level.time;
+
+	randomEffect(self);
 
 	VectorMA (start, 8192, aimdir, end);
 	VectorCopy (start, from);

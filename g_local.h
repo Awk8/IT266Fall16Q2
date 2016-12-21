@@ -907,6 +907,26 @@ struct gclient_s
 	int			playerLevel;
 	int			fireTime;
 	int			prevTime;
+	int			curBuffed;
+	int			timeBuffed;
+	///
+	/// Player Buffs:
+	///
+
+	int			ApplyRegenHealth;//Health Regen
+	int			ApplyPoison;//Poison
+	int			MaxAmmo;//Ammo
+	int			ApplyIncreaseOrDecreaseDamage;//Damage Increase
+	int			ApplyImmortality;//Immortality
+
+	///
+	///Enemy Buffs:
+	///
+	int			ApplyEnemyRegenHealth;//Health Regen
+	int			ApplyEnemyPoison;//Poison
+	int			ApplyEnemySpeedBoostOrReduce;//Speed
+	int			ApplyEnemyIncreaseOrDecreaseDamage;//Damage Increase
+	int			ApplyEnemyImmortality;//Immortality
 
 	weaponstate_t	weaponstate;
 	vec3_t		kick_angles;	// weapon kicks
