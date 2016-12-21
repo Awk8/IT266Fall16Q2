@@ -995,6 +995,8 @@ typedef enum
 #define STAT_ATTRITION			21
 #define STAT_CUR_BUFF_TIME		22
 #define STAT_BUFF				23
+#define STAT_LEVEL_ICON			24
+#define STAT_LEVEL				25
 
 #define	MAX_STATS				32
 

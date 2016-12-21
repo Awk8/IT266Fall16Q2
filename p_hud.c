@@ -29,8 +29,6 @@ void MoveClientToIntermission (edict_t *ent)
 	ent->client->invincible_framenum = 0;
 	ent->client->breather_framenum = 0;
 	ent->client->enviro_framenum = 0;
-	ent->client->attrition_framenum = 0;
-	ent->client->blaster_framenum = 0;
 	ent->client->buff_framenum = 0;
 	ent->client->grenade_blew_up = false;
 	ent->client->grenade_time = 0;
@@ -456,10 +454,21 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_TIMER] = 0;
 	}
 
-	if (ent->client->attrition_framenum > level.framenum)
+	if (ent->client->playerLevel != 0)
 	{
-		ent->client->ps.stats[STAT_ATTRITION] = 10;//Change to text
-		ent->client->ps.stats[STAT_TIME_TO_ATTRITION] = (ent->client->attrition_framenum - level.framenum)/10;
+		ent->client->ps.stats[STAT_LEVEL_ICON] = gi.imageindex ("p_rebreather");
+		ent->client->ps.stats[STAT_LEVEL] = 1;//ent->client->playerLevel;
+	}
+	else
+	{
+		ent->client->ps.stats[STAT_LEVEL_ICON] = 0;
+		ent->client->ps.stats[STAT_LEVEL] = 0;	
+	}
+
+	if (ent->client->attritionTime != 0)
+	{
+		ent->client->ps.stats[STAT_ATTRITION] = gi.imageindex ("p_rebreather");
+		ent->client->ps.stats[STAT_TIME_TO_ATTRITION] = ent->client->attritionTime - level.time + 6;
 	}
 	else
 	{
@@ -467,16 +476,16 @@ void G_SetStats (edict_t *ent)
 		ent->client->ps.stats[STAT_TIME_TO_ATTRITION] = 0;
 	}
 
-		if (ent->client->blaster_framenum > level.framenum)
-	{
-		ent->client->ps.stats[STAT_BLASTER_FIRE] = 10;//Change to text
-		ent->client->ps.stats[STAT_TIME_BLASTER_FIRE] = (ent->client->blaster_framenum - level.framenum)/10;
-	}
-	else
-	{
-		ent->client->ps.stats[STAT_BLASTER_FIRE] = 0;
-		ent->client->ps.stats[STAT_TIME_BLASTER_FIRE] = 0;
-	}
+	//if (ent->client->fireTime != 0)
+	//{
+	//	ent->client->ps.stats[STAT_BLASTER_FIRE] = gi.imageindex ("p_rebreather");
+	//	ent->client->ps.stats[STAT_TIME_BLASTER_FIRE] = ent->client->fireTime - level.time;
+	//}
+	//else
+	//{
+	//	ent->client->ps.stats[STAT_BLASTER_FIRE] = 0;
+	//	ent->client->ps.stats[STAT_TIME_BLASTER_FIRE] = 0;
+	//}
 
 	if (ent->client->buff_framenum > level.framenum)
 	{

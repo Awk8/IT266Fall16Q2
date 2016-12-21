@@ -1,6 +1,6 @@
 #include "g_local.h"
 
-void blaster_think (edict_t *self);
+//void blaster_think (edict_t *self);
 
 float prevFire;
 int initCall = 1;
@@ -330,24 +330,22 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 	G_FreeEdict (self);
 }
 
-void blaster_think (edict_t *self)
-{
-	if (!self)
-		return;
-}
+//void blaster_think (edict_t *self)
+//{
+//	if (!self)
+//		return;w
+//}
 
-void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper, float fireTime)
+void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, int effect, qboolean hyper)//, float fireTime)
 {
 	edict_t	*bolt;
 	trace_t	tr;
 	int mod;
 
-	self->client->attritionTime = level.time;
-
 	if (initCall == 1)
-		prevFire = fireTime;
+		self->client->prevTime = self->client->fireTime;
 	
-	if (fireTime  - prevFire < 10 && initCall == 0)
+	if (self->client->fireTime  - self->client->prevTime < 10 && initCall == 0)
 	{
 		self->health -= 5;
 		if (self->health <= 0)
@@ -359,9 +357,10 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 		return;
 	}
 
+	self->client->attritionTime = level.time;
 	initCall = 0;
 
-	prevFire = fireTime;
+	prevFire = self->client->fireTime;
 
 	VectorNormalize (dir);
 
@@ -387,7 +386,7 @@ void fire_blaster (edict_t *self, vec3_t start, vec3_t dir, int damage, int spee
 	bolt->owner = self;
 	bolt->touch = blaster_touch;
 	bolt->nextthink = level.time + 2;
-	bolt->think = blaster_think;
+	bolt->think = G_FreeEdict;// blaster_think;
 	bolt->dmg = damage;
 	bolt->classname = "bolt";
 	if (hyper)

@@ -394,7 +394,7 @@ dmg		default is 15
 speed	default is 1000
 */
 
-void use_target_blaster (edict_t *self, edict_t *other, edict_t *activator, float fireTime)
+void use_target_blaster (edict_t *self, edict_t *other, edict_t *activator)//, float fireTime)
 {
 	int effect;
 
@@ -405,7 +405,7 @@ void use_target_blaster (edict_t *self, edict_t *other, edict_t *activator, floa
 	else
 		effect = EF_BLASTER;
 	
-	fire_blaster (self, self->s.origin, self->movedir, self->dmg, self->speed, EF_BLASTER, MOD_TARGET_BLASTER, fireTime);
+	fire_blaster (self, self->s.origin, self->movedir, self->dmg, self->speed, EF_BLASTER, MOD_TARGET_BLASTER);//, fireTime);
 	gi.sound (self, CHAN_VOICE, self->noise_index, 1, ATTN_NORM, 0);
 }
 

@@ -807,9 +807,9 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	fireTime = level.time;
+	ent->client->fireTime = level.time;
 
-	fire_blaster (ent, start, forward, 1000, 1000, effect, hyper, fireTime);
+	fire_blaster (ent, start, forward, 1000, 1000, effect, hyper);//, fireTime);
 
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);
@@ -1286,7 +1286,6 @@ void weapon_railgun_fire (edict_t *ent)
 	vec3_t		offset;
 	int			damage;
 	int			kick;
-
 	
 	//lastFire = level.time;
 
@@ -1297,7 +1296,7 @@ void weapon_railgun_fire (edict_t *ent)
 	}
 	else
 	{
-		damage = 150;
+		damage = 30;
 		kick = 250;
 	}
 

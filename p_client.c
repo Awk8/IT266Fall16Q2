@@ -5,6 +5,12 @@ void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 int cnt = 0;
 int buffed = 0;
+int reg = 0;
+int psn = 0;
+int dmg = 0;
+int spd = 0;
+int imm = 0;
+
 int buffCount = 0;
 int currBuffed = 0;
 int time0 = 0;
@@ -784,8 +790,6 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	self->client->invincible_framenum = 0;
 	self->client->breather_framenum = 0;
 	self->client->enviro_framenum = 0;
-	self->client->attrition_framenum = 0;
-	self->client->blaster_framenum = 0;
 	self->client->buff_framenum = 0;
 	self->flags &= ~FL_POWER_ARMOR;
 
@@ -1841,6 +1845,11 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	pmove_t	pm;
 	int mod, rng;
 
+	if (!ent->client->playerLevel)
+		ent->client->playerLevel = 1;
+	if(!ent->client->attritionTime)
+		ent->client->attritionTime = level.time;
+
 	if (level.time - ent->client->attritionTime > 5)
 	{
 		if (ent->health > 0)
@@ -1860,11 +1869,11 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	if (ApplyRegenHealth == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
-
-		if (buffed == 1)
+		if (buffed == 0 || reg == 1)
 		{
+			buffed = 1;
+			reg = 1;
+
 			if (level.time - time0 < 100)
 			{
 				if (buffCount % 6 == 0 && ent->health != ent->max_health)
@@ -1875,22 +1884,24 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			{
 				buffCount = 0;
 				buffed = 0;
+				ApplyRegenHealth = 0;
+				reg = 0;
 			}
 		}
 	}
 	if (ApplyPoison == 1)
 	{
-		if (buffed == 0)
-			buffed = 1;
-
-		if (buffed == 1)
+		if (buffed == 0 || psn == 1)
 		{
-			if (level.time - time0 < 200)
+			buffed = 1;
+			psn = 1;
+
+			if (level.time - time0 < 100)
 			{	
 				if (ent->health > 0)
 				{
-					if (cnt % 10 == 0)
-						ent->health -= 10;
+					if (cnt % 20 == 0)
+						ent->health -= 1;
 					buffCount += 1;
 				}
 				if (ent->health <= 0)
@@ -1900,29 +1911,34 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			{
 				buffCount = 0;
 				buffed = 0;
+				ApplyPoison = 0;
+				psn = 0;
 			}
 		}	
 	}
-	if (ApplySpeedBoostOrReduce == 1)
+	if (ApplySpeedBoostOrReduce == 0)
 	{
-		if (buffed == 0)
-			buffed = 1;
-		//Choose boost/reduce randomly
-		if (buffed == 1)
+		if (buffed == 0 || spd == 1)
 		{
+			buffed = 1;
+			spd = 1;
+
+			//Choose boost/reduce randomly
 			rng = rand() % 2;
 			if (level.time - time0 < 200)
 			{
 				if(rng == 1)
-					ent->gravity = 2.0;
+					ent->speed = 100;
 				if(rng == 2)
-					ent->gravity = 0.5;
+					ent->speed = 500;
 				buffCount += 1;
 			}
 			else
 			{
 				buffCount = 0;
 				buffed = 0;
+				ApplySpeedBoostOrReduce = 0;
+				spd = 0;
 			}
 		}	
 	}

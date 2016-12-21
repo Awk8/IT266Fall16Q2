@@ -714,7 +714,7 @@ void ThrowDebris (edict_t *self, char *modelname, float speed, vec3_t origin);
 qboolean fire_hit (edict_t *self, vec3_t aim, int damage, int kick);
 void fire_bullet (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int mod);
 void fire_shotgun (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick, int hspread, int vspread, int count, int mod);
-void fire_blaster (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int effect, qboolean hyper, float fireTime);
+void fire_blaster (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, int effect, qboolean hyper);//, float fireTime);
 void fire_grenade (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius);
 void fire_grenade2 (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int speed, float timer, float damage_radius, qboolean held);
 void fire_rocket (edict_t *self, vec3_t start, vec3_t dir, int damage, int speed, float damage_radius, int radius_damage);
@@ -827,7 +827,7 @@ typedef struct
 	int			health;
 	int			max_health;
 	int			savedFlags;
-	int			attritionTime;
+	//int			attritionTime;
 	int			experience;
 	int			playerLevel;
 
@@ -905,6 +905,8 @@ struct gclient_s
 	int			attritionTime;
 	int			experience;
 	int			playerLevel;
+	int			fireTime;
+	int			prevTime;
 
 	weaponstate_t	weaponstate;
 	vec3_t		kick_angles;	// weapon kicks
@@ -936,10 +938,7 @@ struct gclient_s
 	float		invincible_framenum;
 	float		breather_framenum;
 	float		enviro_framenum;
-	float		attrition_framenum;
-	float		blaster_framenum;
 	float		buff_framenum; // need to use
-	float		playerLevelDisp;
 
 	qboolean	grenade_blew_up;
 	float		grenade_time;
@@ -969,7 +968,6 @@ struct edict_s
 
 	qboolean	inuse;
 	int			linkcount;
-	int			attritionTime;
 
 	// FIXME: move these fields to a server private sv_entity_t
 	link_t		area;				// linked to a division node or leaf
@@ -1037,7 +1035,7 @@ struct edict_s
 	float		nextthink;
 	void		(*prethink) (edict_t *ent);
 	void		(*think)(edict_t *self);
-	void		(*blaster_think)(edict_t *self);
+	//void		(*blaster_think)(edict_t *self);
 	void		(*blocked)(edict_t *self, edict_t *other);	//move to moveinfo?
 	void		(*touch)(edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf);
 	void		(*use)(edict_t *self, edict_t *other, edict_t *activator);
@@ -1054,6 +1052,11 @@ struct edict_s
 	int			max_health;
 	int			gib_health;
 	int			deadflag;
+	int			attritionTime;
+	int			experience;
+	int			playerLevel;
+	int			fireTime;
+	int			prevTime;
 	qboolean	show_hostile;
 
 	float		powerarmor_time;

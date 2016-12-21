@@ -644,6 +644,14 @@ char *single_statusbar =
 "xv	50 "
 "pic 0 "
 
+// Level
+"if 24 "
+"	yb	-72 "
+"	xv	0 "
+"	num	2	25 "
+"	xv	50 "
+"endif "
+
 // ammo
 "if 2 "
 "	xv	100 "
@@ -687,30 +695,29 @@ char *single_statusbar =
 "endif "
         
 // Attrition		
-"if 16 "			// If STAT_TIMER2_ICON is not zero, then do
+"if 21 "
 "	yb	-48 "		
 "	xr	-58 "		
-"	num	2	17 "	// Display 2-digits with value from stat-array at index 17
+"	num	2	20 "	
 "	xr	-24 "		
-"	pic	16 "		// Display icon
 "endif "			
         
 // BlasterFire		
-"if 18 "			//If STAT_TIMER3_ICON is not zero, then do
+"if 18 "			
 "	yb	-72 "		
 "	xr	-58 "		
-"	num	2	19 "	//Display 2-digits with value from stat-array at index 19
+"	num	2	19 "	
 "	xr	-24 "		
-"	pic	18 "		//Display icon
+"	pic	18 "		
 "endif "			
 
 // Buff			
-"if 20 "			//If STAT_TIMER4_ICON is not zero, then do
+"if 23 "			
 "	yb	-96 "		
 "	xr	-58 "		
-"	num	2	21 "	//Display 2-digits with value from stat-array at index 21
+"	num	2	21 "	
 "	xr	-24 "		 
-"	pic	20 "		//Display icon
+"	pic	20 "		
 "endif "			
 
 //  help / weapon icon 
